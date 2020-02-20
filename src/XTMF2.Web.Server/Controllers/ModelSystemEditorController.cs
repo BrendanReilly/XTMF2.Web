@@ -281,7 +281,6 @@ namespace XTMF2.Web.Server.Controllers
         [HttpPost("projects/{projectName}/model-systems/{modelSystemName}/link")]
         public IActionResult AddLink(string projectName, string modelSystemName, [FromQuery] Guid originNodeId, [FromQuery] Guid destinationNodeId,
         [FromQuery] Guid originHookId,
-        [FromBody] CommentBlockModel commentBlock,
         [FromServices] UserSession userSession)
         {
             if (!HandleRequest(projectName, modelSystemName, userSession, out var session, out var requestResult))
@@ -348,7 +347,7 @@ namespace XTMF2.Web.Server.Controllers
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPost("projects/{projectName}/model-systems/{modelSystemName}/node")]
         public IActionResult AddNode(string projectName,[FromRoute] string modelSystemName, [FromBody] NodeModel nodeModel, [FromQuery] Guid parentId,
-                                    [FromServices] UserSession userSession, Boundary parentBoundary = null)
+                                    [FromServices] UserSession userSession)
         {
             if (!HandleRequest(projectName, modelSystemName, userSession, out var session, out var requestResult))
             {

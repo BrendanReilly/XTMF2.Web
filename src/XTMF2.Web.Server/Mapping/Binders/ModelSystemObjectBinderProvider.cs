@@ -19,6 +19,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using XTMF2.ModelSystemConstruct;
 using XTMF2.Web.Client.Services.Api;
 using XTMF2.Web.Server.Session;
 
@@ -32,7 +33,8 @@ namespace XTMF2.Web.Server.Mapping.Binders
             {
                 throw new ArgumentNullException(nameof(context));
             }
-            if (context.Metadata.ModelType == typeof(Boundary))
+            if (context.Metadata.ModelType == typeof(Boundary) || context.Metadata.ModelType == typeof(Node) || context.Metadata.ModelType == typeof(CommentBlock) ||
+            context.Metadata.ModelType == typeof(Start) || context.Metadata.ModelType == typeof(Boundary) || context.Metadata.ModelType == typeof(NodeHook))
             {
                 return new BinderTypeModelBinder(typeof(ModelSystemObjectBinder));
             }

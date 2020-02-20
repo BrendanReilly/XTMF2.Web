@@ -38,6 +38,7 @@ using NSwag.Generation.Processors.Security;
 using XTMF2.Web.Server.Authorization;
 using XTMF2.Web.Server.Hubs;
 using XTMF2.Web.Server.Mapping.Binders;
+using XTMF2.Web.Server.Options;
 using XTMF2.Web.Server.Services;
 using XTMF2.Web.Server.Services.Interfaces;
 using XTMF2.Web.Server.Session;
@@ -103,6 +104,7 @@ namespace XTMF2.Web.Server
             services.AddScoped<UserSession>();
             services.AddSingleton<ModelSystemSessions>();
             services.AddSingleton<ProjectSessions>();
+            services.AddSingleton<UserTimeoutService>();
             services.AddScoped(providers =>
             {
                 /* This section of code is commented out temporarily until some further changes are mae on the client */
@@ -112,6 +114,8 @@ namespace XTMF2.Web.Server
                 var user = userManager.FindByNameAsync(context.HttpContext.User.Claims.FirstOrDefault()?.Value); */
                 return ((XTMFRuntime)providers.GetService(typeof(XTMFRuntime))).UserController.Users.FirstOrDefault();
             });
+            services.Configure<UserTimeoutOptions>(Configuration);
+
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -196,6 +200,8 @@ namespace XTMF2.Web.Server
                 endpoints.MapHub<SessionContextHub>("/session-context-hub");
                 endpoints.MapFallbackToClientSideBlazor<Client.Program>("index.html");
             });
+            // force spinning up of singleton timeout service
+            app.ApplicationServices.GetService<UserTimeoutService>();
         }
     }
 }
