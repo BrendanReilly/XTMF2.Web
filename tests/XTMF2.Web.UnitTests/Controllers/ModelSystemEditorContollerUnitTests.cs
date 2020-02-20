@@ -325,7 +325,7 @@ namespace XTMF2.Web.UnitTests.Controllers
             var addNodeResult = _controller.AddNodeGenerateParameters("TestProject", "TestModelSystem", globalBoundary.Id, new NodeModel()
             {
                 Name = "TestNodeModule",
-                Type = typeof(SimpleTestModule),
+                Type = typeof(SimpleParameterModule),
                 Location = new Data.Types.Rectangle()
                 {
                     Height = 100,
