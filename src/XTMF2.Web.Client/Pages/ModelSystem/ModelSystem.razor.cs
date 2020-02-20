@@ -20,12 +20,12 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using XTMF2.Web.Data.Models;
 
-namespace XTMF2.Web.Pages
+namespace XTMF2.Web.Client.Pages
 {
     /// <summary>
     ///     Root page / component for the model system display.
     /// </summary>
-    public partial class ModelSystem
+    public partial class ModelSystem : ComponentBase
     {
         /// <summary>
         ///     Path parameter that specifies the project name.
@@ -39,8 +39,6 @@ namespace XTMF2.Web.Pages
         [Microsoft.AspNetCore.Components.Parameter]
         public string ModelSystemName { get; set; }
 
-        [Inject]
-        protected UserModel XtmfUser { get; set; }
 
         [Inject]
         protected ILogger<ModelSystem> Logger { get; set; }
