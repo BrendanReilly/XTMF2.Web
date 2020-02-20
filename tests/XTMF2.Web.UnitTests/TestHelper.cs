@@ -62,15 +62,15 @@ namespace XTMF2.Web.UnitTests
             projectSession.CreateNewModelSystem(user, modelSystemName, out var modelSystem, out error);
             projectSession.EditModelSystem(user, modelSystem, out modelSystemSession, out error);
 
-            modelSystemSession.AddModelSystemStart(user, modelSystemSession.ModelSystem.GlobalBoundary, "TestStart",
+            modelSystemSession.AddModelSystemStart(user, modelSystemSession.ModelSystem.GlobalBoundary, "TestStart", new Rectangle(10, 10, 100, 100),
                 out var start, out error);
             modelSystemSession.AddNode(user, modelSystemSession.ModelSystem.GlobalBoundary, "TestNode1",
-                typeof(SimpleTestModule), out var node, out error);
+                typeof(SimpleTestModule), new Rectangle(10, 10, 100, 100), out var node, out error);
             modelSystemSession.AddLink(user, start, start.Hooks[0], node, out var link, out error);
             modelSystemSession.AddBoundary(user, modelSystemSession.ModelSystem.GlobalBoundary, "TestBoundary1",
                 out var boundary, out error);
             modelSystemSession.AddNode(user, boundary, "TestNode2",
-                typeof(SimpleTestModule), out var testNode2, out error);
+                typeof(SimpleTestModule), new Rectangle(10, 10, 100, 100), out var testNode2, out error);
             return modelSystemSession;
         }
 

@@ -57,13 +57,14 @@ namespace XTMF2.Web.Server.Mapping.Profiles
                 .ForMember(m => m.ContainedWithin, opt => { opt.MapFrom(x => x.ContainedWithin); })
                 .ForMember(m => m.ContainedWithinId, opt => { opt.Ignore(); })
                 .BeforeMap<Actions.GenerateModelSystemObjectIdAction<Node, NodeModel>>();
- //               .AfterMap((src, dest) => { dest.ContainedWithinId = dest.ContainedWithin.Id; });
+            //               .AfterMap((src, dest) => { dest.ContainedWithinId = dest.ContainedWithin.Id; });
 
             CreateMap<NodeHook, NodeHookModel>()
             .BeforeMap<Actions.GenerateModelSystemObjectIdAction<NodeHook, NodeHookModel>>();
             CreateMap<CommentBlock, CommentBlockModel>()
             .BeforeMap<Actions.GenerateModelSystemObjectIdAction<CommentBlock, CommentBlockModel>>();
             CreateMap<Rectangle, Data.Types.Rectangle>();
+            CreateMap<Data.Types.Rectangle, Rectangle>();
         }
 
         public ModelSystemProfile()

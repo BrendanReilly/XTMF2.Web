@@ -37,6 +37,7 @@ using NSwag;
 using NSwag.Generation.Processors.Security;
 using XTMF2.Web.Server.Authorization;
 using XTMF2.Web.Server.Hubs;
+using XTMF2.Web.Server.Mapping.Binders;
 using XTMF2.Web.Server.Services;
 using XTMF2.Web.Server.Services.Interfaces;
 using XTMF2.Web.Server.Session;
@@ -146,6 +147,10 @@ namespace XTMF2.Web.Server
 
                 document.OperationProcessors.Add(
                     new AspNetCoreOperationSecurityScopeProcessor("JWT"));
+            });
+
+            services.AddControllers(options => {
+                 options.ModelBinderProviders.Insert(0, new ModelSystemObjectBinderProvider());
             });
 
             IdentityModelEventSource.ShowPII = true;
