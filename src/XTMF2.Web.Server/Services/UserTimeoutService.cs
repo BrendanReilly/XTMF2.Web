@@ -18,22 +18,62 @@
 
 using System;
 using System.Collections.Generic;
+using System.Timers;
 using Microsoft.Extensions.Options;
 using XTMF2.Web.Server.Options;
 
-namespace XTMF2.Web.Server.Services {
-    public class UserTimeoutService  {
-
+namespace XTMF2.Web.Server.Services
+{
+    public class UserTimeoutService
+    {
+        private readonly Timer _serviceTimer;
         private readonly IOptions<UserTimeoutOptions> _timeoutOptions;
+        private readonly TimeSpan _maxUserInactiveTime;
         public Dictionary<User, DateTime> TimeOfUsersLastActivity = new Dictionary<User, DateTime>();
+
+        public UserTimeoutService()
+        {
+            _maxUserInactiveTime = new TimeSpan(1,0,0);
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="timeoutOptions"></param>
-        public UserTimeoutService(IOptions<UserTimeoutOptions> timeoutOptions) {
+        public UserTimeoutService(IOptions<UserTimeoutOptions> timeoutOptions)
+        {
             _timeoutOptions = timeoutOptions;
-            Console.WriteLine("h");
+
+            // 60 second interval default
+            _serviceTimer = new Timer(1000 * 60);
+            _serviceTimer.Elapsed += OnIntervalElapsed;
+            _serviceTimer.AutoReset = true;
+            _serviceTimer.Enabled = true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        public void RefreshLastActivity(User user)
+        {
+            TimeOfUsersLastActivity[user] = DateTime.Now;
+        }
+
+        /// <summary>
+        /// Interval called every minute, checks if a user has been inactive 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        private void OnIntervalElapsed(Object source, ElapsedEventArgs e)
+        {
+            foreach (var user in TimeOfUsersLastActivity.Keys)
+            {
+                if ((DateTime.Now - TimeOfUsersLastActivity[user]) >= _maxUserInactiveTime)
+                {
+                    // release this users data and sessions
+                }
+            }
         }
 
     }

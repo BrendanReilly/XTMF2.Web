@@ -24,6 +24,7 @@ using Moq;
 using XTMF2.Web.Data.Models;
 using XTMF2.Web.Server.Controllers;
 using XTMF2.Web.Server.Mapping.Profiles;
+using XTMF2.Web.Server.Services;
 using XTMF2.Web.Server.Session;
 using Xunit;
 
@@ -39,7 +40,7 @@ namespace XTMF2.Web.UnitTests.Controllers
         private readonly ILogger<ProjectController> _logger;
         private readonly ProjectController _controller;
         private readonly UserSession _userSession;
-        private readonly ProjectSessions _projectSessions;
+        private readonly ModelSystemEditingSessions _editingSessions;
         private readonly string _userName;
 
         public ProjectControllerUnitTests()
@@ -51,8 +52,8 @@ namespace XTMF2.Web.UnitTests.Controllers
             _runtime = TestHelper.Runtime;
             _logger = Mock.Of<ILogger<ProjectController>>();
             _userSession = new UserSession(_runtime.UserController.GetUserByName(_userName));
-            _projectSessions = new ProjectSessions();
-            _controller = new ProjectController(_runtime, _logger, _mapper, _projectSessions);
+            _editingSessions = new ModelSystemEditingSessions(_mapper, _runtime);
+            _controller = new ProjectController(_runtime, _logger, _mapper, _editingSessions, Mock.Of<UserTimeoutService>());
         }
 
         /// <summary>

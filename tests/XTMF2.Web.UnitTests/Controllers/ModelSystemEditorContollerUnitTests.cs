@@ -45,8 +45,7 @@ namespace XTMF2.Web.UnitTests.Controllers
         private readonly ILogger<ModelSystemEditorController> _logger;
         private readonly ModelSystemEditorController _controller;
         private readonly UserSession _userSession;
-        private readonly ProjectSessions _projectSessions;
-        private readonly ModelSystemSessions _modelSystemSessions;
+        private readonly ModelSystemEditingSessions _modelSystemSessions;
         private readonly ITestOutputHelper output;
         private readonly string _userName;
         private readonly User _user;
@@ -66,10 +65,9 @@ namespace XTMF2.Web.UnitTests.Controllers
             _user = TestHelper.CreateTestUser(_userName);
             _runtime = TestHelper.Runtime;
             _logger = Mock.Of<ILogger<ModelSystemEditorController>>();
-            _projectSessions = new ProjectSessions();
-            _modelSystemSessions = new ModelSystemSessions(_mapper);
+            _modelSystemSessions = new ModelSystemEditingSessions(_mapper, _runtime);
             _controller =
-                new ModelSystemEditorController(_runtime, _logger, _projectSessions, _modelSystemSessions, _mapper,
+                new ModelSystemEditorController(_runtime, _logger,  _modelSystemSessions, _mapper,
                     Mock.Of<IHubContext<ModelSystemEditingHub>>());
             _userSession = new UserSession(_runtime.UserController.GetUserByName(_userName));
             this.output = output;

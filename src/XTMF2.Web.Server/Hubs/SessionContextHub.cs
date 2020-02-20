@@ -32,8 +32,7 @@ namespace XTMF2.Web.Server.Hubs
     public class SessionContextHub : Hub
     {
         private readonly ILogger<SessionContextHub> _logger;
-        private readonly ModelSystemSessions _modelSystemSessions;
-        private readonly ProjectSessions _projectSessions;
+        private readonly ModelSystemEditingSessions _modelSystemSessions;
         public readonly Dictionary<User, int> UserSessionCounts = new Dictionary<User, int>();
 
         /// <summary>
@@ -72,8 +71,8 @@ namespace XTMF2.Web.Server.Hubs
             if (UserSessionCounts[userSession.User] == 0)
             {
                 // no session counts left, clear project sessions
-                _projectSessions.ClearSessionsForUser(userSession.User);
                 _modelSystemSessions.ClearSessionsForUser(userSession.User);
+                _modelSystemSessions.ClearProjectSessionsForUser(userSession.User);
             }
         }
 
@@ -89,15 +88,14 @@ namespace XTMF2.Web.Server.Hubs
         }
 
         /// <summary>
+        /// 
         /// </summary>
         /// <param name="logger"></param>
-        /// <param name="projectSessions"></param>
         /// <param name="modelSystemSessions"></param>
-        public SessionContextHub(ILogger<SessionContextHub> logger, ProjectSessions projectSessions,
-            ModelSystemSessions modelSystemSessions)
+        public SessionContextHub(ILogger<SessionContextHub> logger,
+            ModelSystemEditingSessions modelSystemSessions)
         {
             _logger = logger;
-            _projectSessions = projectSessions;
             _modelSystemSessions = modelSystemSessions;
         }
     }

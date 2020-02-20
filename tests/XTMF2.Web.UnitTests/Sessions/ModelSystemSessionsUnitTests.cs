@@ -23,9 +23,9 @@ namespace XTMF2.Web.UnitTests.Sessions
     /// <summary>
     ///     Unit tests related to the model system sessions
     /// </summary>
-    public sealed class ModelSystemSessionsUnitTests : IDisposable
+    public sealed class ModelSystemEditingSessionsUnitTests : IDisposable
     {
-        public ModelSystemSessionsUnitTests() {
+        public ModelSystemEditingSessionsUnitTests() {
 
         }
         public void Dispose()

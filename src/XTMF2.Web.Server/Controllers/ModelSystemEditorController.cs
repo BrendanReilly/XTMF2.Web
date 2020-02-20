@@ -43,8 +43,7 @@ namespace XTMF2.Web.Server.Controllers
     public class ModelSystemEditorController : ControllerBase
     {
         private readonly XTMFRuntime _xtmfRuntime;
-        private readonly ProjectSessions _projectSessions;
-        private readonly ModelSystemSessions _modelSystemSessions;
+        private readonly ModelSystemEditingSessions _editingSessions;
         private readonly IMapper _mapper;
         private ILogger<ModelSystemEditorController> _logger;
         private IHubContext<ModelSystemEditingHub> _editingHub;
@@ -58,12 +57,11 @@ namespace XTMF2.Web.Server.Controllers
         /// <param name="modelSystemSessions"></param>
         /// <param name="mapper"></param>
         /// <param name="editingHub"></param>
-        public ModelSystemEditorController(XTMFRuntime runtime, ILogger<ModelSystemEditorController> logger, ProjectSessions projectSessions,
-            ModelSystemSessions modelSystemSessions, IMapper mapper, IHubContext<ModelSystemEditingHub> editingHub)
+        public ModelSystemEditorController(XTMFRuntime runtime, ILogger<ModelSystemEditorController> logger,
+            ModelSystemEditingSessions editingSessions, IMapper mapper, IHubContext<ModelSystemEditingHub> editingHub)
         {
             _xtmfRuntime = runtime;
-            _projectSessions = projectSessions;
-            _modelSystemSessions = modelSystemSessions;
+            _editingSessions = editingSessions;
             _mapper = mapper;
             _logger = logger;
             _editingHub = editingHub;
@@ -79,19 +77,19 @@ namespace XTMF2.Web.Server.Controllers
         /// <returns></returns>
         private bool HandleRequest(string projectName, string modelSystemName, UserSession userSession, out Editing.ModelSystemSession session, out IActionResult result)
         {
-            if (!Utils.XtmfUtils.GetModelSystemHeader(_xtmfRuntime, userSession, _projectSessions, projectName, modelSystemName, out var modelSystemHeader, out var error))
+            if (!Utils.XtmfUtils.GetModelSystemHeader(_xtmfRuntime, userSession, _editingSessions, projectName, modelSystemName, out var modelSystemHeader, out var error))
             {
                 result = error.UnauthorizedUser ? new UnauthorizedResult() : (IActionResult)(new NotFoundObjectResult(error));
                 session = null;
                 return false;
             }
-            if (!Utils.XtmfUtils.GetProjectSession(_xtmfRuntime, userSession, projectName, out var projectSession, _projectSessions, out error))
+            if (!Utils.XtmfUtils.GetProjectSession(_xtmfRuntime, userSession, projectName, out var projectSession, _editingSessions, out error))
             {
                 result = new NotFoundObjectResult(error);
                 session = null;
                 return false;
             }
-            if (!projectSession.EditModelSystem(userSession.User, modelSystemHeader, out session, out error))
+            if (!_editingSessions.GetModelSystemSession(userSession.User, projectSession.Project, modelSystemHeader, out session, out error))
             {
                 result = new UnprocessableEntityObjectResult(error);
                 return false;
@@ -116,13 +114,8 @@ namespace XTMF2.Web.Server.Controllers
             {
                 return requestResult;
             }
-            // determine if the model system edting model exists, otherwise add it
-            if (!_modelSystemSessions.ModelSystemEditingModels.TryGetValue(session, out var editingModel))
-            {
-                editingModel = _mapper.Map<ModelSystemEditingModel>(session.ModelSystem);
-                _modelSystemSessions.ModelSystemEditingModels[session] = editingModel;
-            }
-            return new OkObjectResult(editingModel);
+            var tracker = _editingSessions.GetModelSystemEditingTracker(session);
+            return new OkObjectResult(tracker.ModelSystem);
         }
 
         /// <summary>
@@ -187,7 +180,7 @@ namespace XTMF2.Web.Server.Controllers
             {
                 return requestResult;
             }
-            var tracker = _modelSystemSessions.GetModelSystemEditingTracker(session);
+            var tracker = _editingSessions.GetModelSystemEditingTracker(session);
             if (!tracker.TryGetModelSystemObject<Boundary>(parentId, out var parentBoundary))
             {
                 return new UnprocessableEntityObjectResult("Specified parent boundary does not exist.");
@@ -218,7 +211,7 @@ namespace XTMF2.Web.Server.Controllers
             {
                 return requestResult;
             }
-            var tracker = _modelSystemSessions.GetModelSystemEditingTracker(session);
+            var tracker = _editingSessions.GetModelSystemEditingTracker(session);
             if (!tracker.TryGetModelSystemObject<Boundary>(parentId, out var parentBoundary))
             {
                 return new UnprocessableEntityObjectResult("Specified parent boundary does not exist.");
@@ -252,7 +245,7 @@ namespace XTMF2.Web.Server.Controllers
             {
                 return requestResult;
             }
-            var tracker = _modelSystemSessions.GetModelSystemEditingTracker(session);
+            var tracker = _editingSessions.GetModelSystemEditingTracker(session);
             if (!tracker.TryGetModelSystemObject<Boundary>(parentId, out var parentBoundary))
             {
                 return new UnprocessableEntityObjectResult("Specified parent boundary does not exist.");
@@ -287,7 +280,7 @@ namespace XTMF2.Web.Server.Controllers
             {
                 return requestResult;
             }
-            var tracker = _modelSystemSessions.GetModelSystemEditingTracker(session);
+            var tracker = _editingSessions.GetModelSystemEditingTracker(session);
             Node originNode = tracker.GetModelSystemObject<Node>(originNodeId);
             Node destinationNode = tracker.GetModelSystemObject<Node>(destinationNodeId);
             NodeHook originHook = tracker.GetModelSystemObject<NodeHook>(originHookId);
@@ -319,7 +312,7 @@ namespace XTMF2.Web.Server.Controllers
             {
                 return requestResult;
             }
-            var tracker = _modelSystemSessions.GetModelSystemEditingTracker(session);
+            var tracker = _editingSessions.GetModelSystemEditingTracker(session);
             if (!tracker.TryGetModelSystemObject<Boundary>(parentId, out var parentBoundary))
             {
                 return new UnprocessableEntityObjectResult("Specified parent boundary does not exist.");
@@ -346,14 +339,14 @@ namespace XTMF2.Web.Server.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPost("projects/{projectName}/model-systems/{modelSystemName}/node")]
-        public IActionResult AddNode(string projectName,[FromRoute] string modelSystemName, [FromBody] NodeModel nodeModel, [FromQuery] Guid parentId,
+        public IActionResult AddNode(string projectName, [FromRoute] string modelSystemName, [FromBody] NodeModel nodeModel, [FromQuery] Guid parentId,
                                     [FromServices] UserSession userSession)
         {
             if (!HandleRequest(projectName, modelSystemName, userSession, out var session, out var requestResult))
             {
                 return requestResult;
             }
-            var tracker = _modelSystemSessions.GetModelSystemEditingTracker(session);
+            var tracker = _editingSessions.GetModelSystemEditingTracker(session);
             if (!tracker.TryGetModelSystemObject<Boundary>(parentId, out var parentBoundary))
             {
                 return new UnprocessableEntityObjectResult("Specified parent boundary does not exist.");
@@ -383,7 +376,7 @@ namespace XTMF2.Web.Server.Controllers
             {
                 return requestResult;
             }
-            var tracker = _modelSystemSessions.GetModelSystemEditingTracker(session);
+            var tracker = _editingSessions.GetModelSystemEditingTracker(session);
             if (!tracker.TryGetModelSystemObject<Boundary>(parentBoundaryId, out var parentBoundary) ||
                 !tracker.TryGetModelSystemObject<CommentBlock>(commentBlockId, out var commentBlock))
             {
@@ -415,7 +408,7 @@ namespace XTMF2.Web.Server.Controllers
             {
                 return requestResult;
             }
-            var tracker = _modelSystemSessions.GetModelSystemEditingTracker(session);
+            var tracker = _editingSessions.GetModelSystemEditingTracker(session);
             Boundary parentBoundary = tracker.GetModelSystemObject<Boundary>(parentBoundaryId);
             Boundary boundary = tracker.GetModelSystemObject<Boundary>(boundaryId);
             if (!session.RemoveBoundary(userSession.User, parentBoundary, boundary, out var error))
@@ -442,7 +435,7 @@ namespace XTMF2.Web.Server.Controllers
             {
                 return requestResult;
             }
-            var tracker = _modelSystemSessions.GetModelSystemEditingTracker(session);
+            var tracker = _editingSessions.GetModelSystemEditingTracker(session);
             Start start = tracker.GetModelSystemObject<Start>(startId);
             if (!session.RemoveStart(userSession.User, start, out var error))
             {

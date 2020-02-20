@@ -26,20 +26,17 @@ namespace XTMF2.Web.Server.Mapping.Binders
     public class ModelSystemObjectBinder : IModelBinder
     {
 
-        private readonly ModelSystemSessions _modelSystemSessions;
-
-        private readonly ProjectSessions _projectSessions;
+        private readonly ModelSystemEditingSessions _modelSystemSessions;
 
         private readonly UserSession _userSession;
 
         private readonly XTMFRuntime _runtime;
 
-        public ModelSystemObjectBinder(ModelSystemSessions modelSystemSessions, UserSession userSession, XTMFRuntime runtime, ProjectSessions projectSessions)
+        public ModelSystemObjectBinder(ModelSystemEditingSessions modelSystemSessions, UserSession userSession, XTMFRuntime runtime)
         {
             _modelSystemSessions = modelSystemSessions;
             _userSession = userSession;
             _runtime = runtime;
-            _projectSessions = projectSessions;
         }
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
@@ -50,12 +47,15 @@ namespace XTMF2.Web.Server.Mapping.Binders
                 return Task.CompletedTask;
             }
             var project = Utils.XtmfUtils.GetProject((string)routeValues["projectName"], _userSession);
-            if (!Utils.XtmfUtils.GetModelSystemHeader(_runtime, _userSession, _projectSessions, (string)routeValues["projectName"],
+            if (!Utils.XtmfUtils.GetModelSystemHeader(_runtime, _userSession, _modelSystemSessions, (string)routeValues["projectName"],
              (string)routeValues["modelSystemName"], out var modelSystemHeader, out var commandError))
             {
                 bindingContext.ModelState.TryAddModelError(bindingContext.ModelName, "Invalid model system or project specified.");
             }
-            var session = _modelSystemSessions.GetModelSystemSession(_userSession.User, project, modelSystemHeader);
+            if(!_modelSystemSessions.GetModelSystemSession(_userSession.User, project, modelSystemHeader, out var session, out var error))
+            {
+                return Task.CompletedTask;
+            }
             var tracker = _modelSystemSessions.GetModelSystemEditingTracker(session);
             if (tracker.TryGetModelSystemObject<ViewObject>(Guid.Parse(bindingContext.HttpContext.Request.Query[bindingContext.ModelName]), out var modelSystemObject))
             {

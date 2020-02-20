@@ -36,7 +36,7 @@ namespace XTMF2.Web.Server.Controllers
     {
         private readonly ILogger<ModelSystemController> _logger;
         private readonly IMapper _mapper;
-        private readonly ProjectSessions _projectSessions;
+        private readonly ModelSystemEditingSessions _editingModelSystemEditingSessions;
         private readonly XTMFRuntime _xtmfRuntime;
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace XTMF2.Web.Server.Controllers
             [FromServices] UserSession userSession)
         {
             if (!XtmfUtils.GetProjectSession(_xtmfRuntime, userSession, projectName, out var projectSession,
-                _projectSessions, out var error))
+                _editingModelSystemEditingSessions, out var error))
             {
                 return new NotFoundObjectResult(error);
             }
@@ -83,12 +83,12 @@ namespace XTMF2.Web.Server.Controllers
         {
             
             if (!XtmfUtils.GetProjectSession(_xtmfRuntime, userSession, projectName, out var projectSession,
-                _projectSessions, out var error))
+                _editingModelSystemEditingSessions, out var error))
             {
                 return new NotFoundObjectResult(error);
             }
 
-            if (!XtmfUtils.GetModelSystemHeader(_xtmfRuntime, userSession, _projectSessions, projectName,
+            if (!XtmfUtils.GetModelSystemHeader(_xtmfRuntime, userSession, _editingModelSystemEditingSessions, projectName,
                 modelSystemName, out var modelSystemHeader, out error))
             {
                 return new NotFoundObjectResult(error);
@@ -114,7 +114,7 @@ namespace XTMF2.Web.Server.Controllers
         [ProducesResponseType(typeof(ModelSystemModel), StatusCodes.Status200OK)]
         public IActionResult Get(string projectName, string modelSystemName, [FromServices] UserSession userSession)
         {
-            if (!XtmfUtils.GetModelSystemHeader(_xtmfRuntime, userSession, _projectSessions, projectName,
+            if (!XtmfUtils.GetModelSystemHeader(_xtmfRuntime, userSession, _editingModelSystemEditingSessions, projectName,
                 modelSystemName, out var modelSystemHeader, out var error))
             {
                 return new NotFoundObjectResult(error);
@@ -133,7 +133,7 @@ namespace XTMF2.Web.Server.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(IEnumerable<ModelSystemModel>), StatusCodes.Status200OK)]
         public IActionResult List(string projectName, [FromServices] UserSession userSession) {
-            if(!XtmfUtils.GetProjectSession(_xtmfRuntime,userSession, projectName, out var projectSession, _projectSessions, out var error)) {
+            if(!XtmfUtils.GetProjectSession(_xtmfRuntime,userSession, projectName, out var projectSession, _editingModelSystemEditingSessions, out var error)) {
                 return new NotFoundObjectResult(error);
             }
             return new OkObjectResult(_mapper.Map<List<ModelSystemModel>>(projectSession.ModelSystems));
@@ -149,12 +149,12 @@ namespace XTMF2.Web.Server.Controllers
         public ModelSystemController(XTMFRuntime runtime,
             ILogger<ModelSystemController> logger,
             IMapper mapper,
-            ProjectSessions projectSessions)
+            ModelSystemEditingSessions editingSessions)
         {
             _xtmfRuntime = runtime;
             _logger = logger;
             _mapper = mapper;
-            _projectSessions = projectSessions;
+            _editingModelSystemEditingSessions = editingSessions;
         }
     }
 }

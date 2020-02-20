@@ -25,9 +25,8 @@ namespace XTMF2.Web.Server.Mapping.Binders
 {
     public class ModelSystemSessionBinder : IModelBinder
     {
-        private readonly ModelSystemSessions _modelSystemSessions;
+        private readonly ModelSystemEditingSessions _modelSystemSessions;
 
-        private readonly ProjectSessions _projectSessions;
 
         private readonly UserSession _userSession;
 
@@ -40,12 +39,11 @@ namespace XTMF2.Web.Server.Mapping.Binders
         /// <param name="userSession"></param>
         /// <param name="runtime"></param>
         /// <param name="projectSessions"></param>
-        public ModelSystemSessionBinder(ModelSystemSessions modelSystemSessions, UserSession userSession, XTMFRuntime runtime, ProjectSessions projectSessions)
+        public ModelSystemSessionBinder(ModelSystemEditingSessions modelSystemSessions, UserSession userSession, XTMFRuntime runtime)
         {
             _modelSystemSessions = modelSystemSessions;
             _userSession = userSession;
             _runtime = runtime;
-            _projectSessions = projectSessions;
         }
 
         /// <summary>
@@ -63,12 +61,14 @@ namespace XTMF2.Web.Server.Mapping.Binders
                 return Task.CompletedTask;
             }
             var project = Utils.XtmfUtils.GetProject((string)routeValues["projectName"], _userSession);
-            if (!Utils.XtmfUtils.GetModelSystemHeader(_runtime, _userSession, _projectSessions, (string)routeValues["projectName"],
+            if (!Utils.XtmfUtils.GetModelSystemHeader(_runtime, _userSession, _modelSystemSessions, (string)routeValues["projectName"],
              (string)routeValues["modelSystemName"], out var modelSystemHeader, out var commandError))
             {
                 bindingContext.ModelState.TryAddModelError(bindingContext.ModelName, "Invalid model system or project specified.");
             }
-            var session = _modelSystemSessions.GetModelSystemSession(_userSession.User, project, modelSystemHeader);
+            if(!_modelSystemSessions.GetModelSystemSession(_userSession.User, project, modelSystemHeader, out var session, out var error)) {
+                return Task.CompletedTask;
+            }
             bindingContext.Result = ModelBindingResult.Success(session);
             return Task.CompletedTask;
         }

@@ -29,8 +29,7 @@ namespace XTMF2.Web.UnitTests.Hubs
     /// <summary>
     ///     Unit tests related to the SessionContextUnitHub
     /// </summary>
-    [Collection("Sequential")]
-    public  sealed class SessionContextHubUnitTests : IDisposable
+    public sealed class SessionContextHubUnitTests : IDisposable
     {
         public SessionContextHubUnitTests()
         {
@@ -38,11 +37,10 @@ namespace XTMF2.Web.UnitTests.Hubs
             _userName = Guid.NewGuid().ToString();
             TestHelper.CreateTestUser(_userName);
             _runtime = TestHelper.Runtime;
-            _projectSessions = new ProjectSessions();
-            _modelSystemSessions = new ModelSystemSessions(config.CreateMapper());
+            _modelSystemSessions = new ModelSystemEditingSessions(config.CreateMapper(), _runtime);
             _userSession = new UserSession(_runtime.UserController.GetUserByName(_userName));
             var logger = Mock.Of<ILogger<SessionContextHub>>();
-            _sessionContextHub = new SessionContextHub(logger, _projectSessions, _modelSystemSessions);
+            _sessionContextHub = new SessionContextHub(logger, _modelSystemSessions);
         }
 
         public void Dispose()
@@ -53,8 +51,7 @@ namespace XTMF2.Web.UnitTests.Hubs
 
         private readonly XTMFRuntime _runtime;
         private readonly string _userName;
-        private readonly ProjectSessions _projectSessions;
-        private readonly ModelSystemSessions _modelSystemSessions;
+        private readonly ModelSystemEditingSessions _modelSystemSessions;
         private readonly UserSession _userSession;
         private readonly SessionContextHub _sessionContextHub;
 
@@ -110,10 +107,10 @@ namespace XTMF2.Web.UnitTests.Hubs
             projectSession.CreateNewModelSystem(_userSession.User, "MSNAME", out var modelSystem, out error);
             projectSession.EditModelSystem(_userSession.User, modelSystem, out var modelSystemSession, out error);
             _modelSystemSessions.TrackSessionForUser(_userSession.User, projectSession.Project, modelSystemSession);
-            Assert.Single(_modelSystemSessions.Sessions[_userSession.User]);
+            Assert.Single(_modelSystemSessions.ProjectSessions[_userSession.User]);
             _sessionContextHub.TrackUserDisconnected(_userSession);
             _sessionContextHub.TrackUserDisconnected(_userSession);
-            Assert.Empty(_modelSystemSessions.Sessions[_userSession.User]);
+            Assert.Empty(_modelSystemSessions.ProjectSessions[_userSession.User]);
         }
 
         /// <summary>
@@ -128,14 +125,14 @@ namespace XTMF2.Web.UnitTests.Hubs
                 out var error);
             _runtime.ProjectController.CreateNewProject(_userSession.User, "ProjectName2", out var projectSession2,
                 out error);
-            _projectSessions.TrackSessionForUser(_userSession.User, projectSession);
-            _projectSessions.TrackSessionForUser(_userSession.User, projectSession2);
-            Assert.Collection(_projectSessions.Sessions[_userSession.User],
+            _modelSystemSessions.TrackProjectSessionForUser(_userSession.User, projectSession);
+            _modelSystemSessions.TrackProjectSessionForUser(_userSession.User, projectSession2);
+            Assert.Collection(_modelSystemSessions.ProjectSessions[_userSession.User],
                 item => { Assert.Equal("ProjectName", item.Project.Name); },
                 item => { Assert.Equal("ProjectName2", item.Project.Name); });
             _sessionContextHub.TrackUserDisconnected(_userSession);
             _sessionContextHub.TrackUserDisconnected(_userSession);
-            Assert.Empty(_projectSessions.Sessions[_userSession.User]);
+            Assert.Empty(_modelSystemSessions.ProjectSessions[_userSession.User]);
         }
 
         /// <summary>

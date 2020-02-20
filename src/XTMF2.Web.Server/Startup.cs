@@ -36,6 +36,7 @@ using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using XTMF2.Web.Server.Authorization;
+using XTMF2.Web.Server.Controllers;
 using XTMF2.Web.Server.Hubs;
 using XTMF2.Web.Server.Mapping.Binders;
 using XTMF2.Web.Server.Options;
@@ -102,7 +103,7 @@ namespace XTMF2.Web.Server
 
             services.AddScoped(typeof(IAuthenticationService), typeof(AuthenticationService));
             services.AddScoped<UserSession>();
-            services.AddSingleton<ModelSystemSessions>();
+            services.AddSingleton<ModelSystemEditingSessions>();
             services.AddSingleton<ProjectSessions>();
             services.AddSingleton<UserTimeoutService>();
             services.AddScoped(providers =>
@@ -155,6 +156,7 @@ namespace XTMF2.Web.Server
 
             services.AddControllers(options => {
                  options.ModelBinderProviders.Insert(0, new ModelSystemObjectBinderProvider());
+                 options.Filters.Add(typeof(UserTimeoutActionFilter));
             });
 
             IdentityModelEventSource.ShowPII = true;

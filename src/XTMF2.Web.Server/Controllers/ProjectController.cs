@@ -25,10 +25,12 @@ using Microsoft.Extensions.Logging;
 using XTMF2.Web.Data.Models;
 using XTMF2.Web.Server.Authorization;
 using XTMF2.Web.Server.Mapping.Binders;
+using XTMF2.Web.Server.Services;
 using XTMF2.Web.Server.Session;
 using XTMF2.Web.Server.Utils;
 
-namespace XTMF2.Web.Server.Controllers {
+namespace XTMF2.Web.Server.Controllers
+{
     /// <summary>
     ///     API Controller for project related actions.
     /// </summary>
@@ -36,26 +38,31 @@ namespace XTMF2.Web.Server.Controllers {
     [ApiController]
     [Authorize]
     // [Authorize] ! Authorization pending change to client
-    public class ProjectController : ControllerBase {
+    public class ProjectController : Controller
+    {
         private readonly ILogger<ProjectController> _logger;
         private readonly IMapper _mapper;
         private readonly XTMFRuntime _xtmfRuntime;
-        private readonly ProjectSessions _projectSessions;
+        private readonly ModelSystemEditingSessions _editingSessions;
 
         /// <summary>
+        /// 
         /// </summary>
         /// <param name="runtime"></param>
         /// <param name="logger"></param>
         /// <param name="mapper"></param>
+        /// <param name="editingSessions"></param>
+        /// <param name="userTimeoutService"></param>
         public ProjectController(XTMFRuntime runtime,
             ILogger<ProjectController> logger,
             IMapper mapper,
-            ProjectSessions projectSessions)
+            ModelSystemEditingSessions editingSessions,
+            UserTimeoutService userTimeoutService)
         {
             _xtmfRuntime = runtime;
             _logger = logger;
             _mapper = mapper;
-            _projectSessions = projectSessions;
+            _editingSessions = editingSessions;
         }
 
         /// <summary>
@@ -157,7 +164,7 @@ namespace XTMF2.Web.Server.Controllers {
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult EndSession(string projectName, [FromServices] UserSession state)
         {
-            if (!XtmfUtils.GetProjectSession(_xtmfRuntime, state, projectName, out var projectSession, _projectSessions, out var error))
+            if (!XtmfUtils.GetProjectSession(_xtmfRuntime, state, projectName, out var projectSession, _editingSessions, out var error))
             {
                 return new NotFoundObjectResult(error);
             }

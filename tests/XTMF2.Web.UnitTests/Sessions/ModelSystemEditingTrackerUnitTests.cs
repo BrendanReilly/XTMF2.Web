@@ -50,7 +50,7 @@ namespace XTMF2.Web.UnitTests.Sessions
         {
             TestHelper.InitializeTestModelSystem(_user, "ProjectName", "TestModelSystem", out var session);
             var editingModel = _mapper.Map<ModelSystemEditingModel>(session.ModelSystem);
-            var tracker = new ModelSystemEditingTracker(editingModel,_mapper);
+            var tracker = new ModelSystemEditingTracker(session,_mapper);
             Assert.Equal(tracker.ModelSystemObjectReferenceMap.Count, tracker.ModelSystemEditingObjectReferenceMap.Count);
             Assert.True(tracker.ModelSystemEditingObjectReferenceMap.Count > 0);
         }
@@ -62,8 +62,8 @@ namespace XTMF2.Web.UnitTests.Sessions
         public void Tracker_Stores_SpecificReferencesCorrectly()
         {
             TestHelper.InitializeTestModelSystem(_user, "ProjectName", "TestModelSystem", out var session);
-            var editingModel = _mapper.Map<ModelSystemEditingModel>(session.ModelSystem);
-            var tracker = new ModelSystemEditingTracker(editingModel,_mapper);
+            var tracker = new ModelSystemEditingTracker(session,_mapper);
+            var editingModel = tracker.ModelSystem;
             Assert.True(tracker.ModelSystemEditingObjectReferenceMap.ContainsKey(editingModel.GlobalBoundary.Id));
             Assert.True(tracker.ModelSystemObjectReferenceMap.ContainsKey(editingModel.GlobalBoundary.ObjectReference));
         }
@@ -76,7 +76,7 @@ namespace XTMF2.Web.UnitTests.Sessions
         {
             TestHelper.InitializeTestModelSystem(_user, "ProjectName", "TestModelSystem", out var session);
             var editingModel = _mapper.Map<ModelSystemEditingModel>(session.ModelSystem);
-            var tracker = new ModelSystemEditingTracker(editingModel,_mapper);
+            var tracker = new ModelSystemEditingTracker(session,_mapper);
             session.AddCommentBlock(_user, session.ModelSystem.GlobalBoundary, "A comment", new Rectangle(0, 0, 100, 100), out var block, out var error);
             Assert.True(tracker.ModelSystemObjectReferenceMap.ContainsKey(block));
             Assert.NotEqual(new Guid(), tracker.ModelSystemObjectReferenceMap[block].Id);
@@ -91,7 +91,7 @@ namespace XTMF2.Web.UnitTests.Sessions
         {
             TestHelper.InitializeTestModelSystem(_user, "ProjectName", "TestModelSystem", out var session);
             var editingModel = _mapper.Map<ModelSystemEditingModel>(session.ModelSystem);
-            var tracker = new ModelSystemEditingTracker(editingModel,_mapper);
+            var tracker = new ModelSystemEditingTracker(session,_mapper);
             session.AddCommentBlock(_user, session.ModelSystem.GlobalBoundary, "A comment", new Rectangle(0, 0, 100, 100), out var block, out var error);
             session.AddCommentBlock(_user, session.ModelSystem.GlobalBoundary, "A comment 2", new Rectangle(0, 0, 100, 100), out var block2, out  error);
             Assert.True(tracker.ModelSystemObjectReferenceMap.ContainsKey(block));

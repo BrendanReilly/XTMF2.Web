@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using AutoMapper;
+using XTMF2.Editing;
 using XTMF2.Web.Data.Models.Editing;
 using XTMF2.Web.Server.Utils;
 
@@ -40,16 +41,20 @@ namespace XTMF2.Web.Server.Session
 
         private readonly IMapper _mapper;
 
+        public ModelSystemSession ModelSystemSession { get; }
+
 
         /// <summary>
+        /// 
         /// </summary>
-        /// <param name="modelSystem"></param>
+        /// <param name="modelSystemSession"></param>
         /// <param name="mapper"></param>
-        public ModelSystemEditingTracker(ModelSystemEditingModel modelSystem, IMapper mapper)
+        public ModelSystemEditingTracker(ModelSystemSession modelSystemSession, IMapper mapper)
         {
-            ModelSystem = modelSystem;
+            ModelSystemSession = modelSystemSession;
+            ModelSystem = mapper.Map<ModelSystemEditingModel>(modelSystemSession.ModelSystem);
             _mapper = mapper;
-            StoreModelSystemObjectReferenceMap(modelSystem);
+            StoreModelSystemObjectReferenceMap(ModelSystem);
         }
 
         /// <summary>
@@ -170,13 +175,13 @@ namespace XTMF2.Web.Server.Session
 
                 if (viewObject.ObjectReference is Boundary boundary)
                 {
-                    ((INotifyCollectionChanged) boundary.Boundaries).CollectionChanged +=
+                    ((INotifyCollectionChanged)boundary.Boundaries).CollectionChanged +=
                         OnModelSystemCollectionChanged;
-                    ((INotifyCollectionChanged) boundary.Modules).CollectionChanged += OnModelSystemCollectionChanged;
-                    ((INotifyCollectionChanged) boundary.Links).CollectionChanged += OnModelSystemCollectionChanged;
-                    ((INotifyCollectionChanged) boundary.CommentBlocks).CollectionChanged +=
+                    ((INotifyCollectionChanged)boundary.Modules).CollectionChanged += OnModelSystemCollectionChanged;
+                    ((INotifyCollectionChanged)boundary.Links).CollectionChanged += OnModelSystemCollectionChanged;
+                    ((INotifyCollectionChanged)boundary.CommentBlocks).CollectionChanged +=
                         OnModelSystemCollectionChanged;
-                    ((INotifyCollectionChanged) boundary.Starts).CollectionChanged += OnModelSystemCollectionChanged;
+                    ((INotifyCollectionChanged)boundary.Starts).CollectionChanged += OnModelSystemCollectionChanged;
                 }
             }
         }
@@ -203,14 +208,14 @@ namespace XTMF2.Web.Server.Session
             if (args.Action == NotifyCollectionChangedAction.Add)
                 foreach (var item in args.NewItems)
                 {
-                    var editingObject = (ViewObject) _mapper.Map(item, item.GetType(),
+                    var editingObject = (ViewObject)_mapper.Map(item, item.GetType(),
                         ModelSystemUtils.GetModelSystemEditingType(item));
 
                     if (editingObject is NodeModel nodeModel)
                     {
                         // make sure contained within ID and and ContainedWithin point to correct references
-                        var node = ((Node) nodeModel.ObjectReference).ContainedWithin;
-                        nodeModel.ContainedWithin = (BoundaryModel) ModelSystemObjectReferenceMap[node];
+                        var node = ((Node)nodeModel.ObjectReference).ContainedWithin;
+                        nodeModel.ContainedWithin = (BoundaryModel)ModelSystemObjectReferenceMap[node];
                         nodeModel.ContainedWithinId = ModelSystemObjectReferenceMap[node].Id;
                     }
 
@@ -224,7 +229,7 @@ namespace XTMF2.Web.Server.Session
             else if (args.Action == NotifyCollectionChangedAction.Remove)
                 foreach (var item in args.OldItems)
                 {
-                    var editingObject = (ViewObject) _mapper.Map(item, item.GetType(),
+                    var editingObject = (ViewObject)_mapper.Map(item, item.GetType(),
                         ModelSystemUtils.GetModelSystemEditingType(item));
                     foreach (var e in ModelSystemUtils.Traverse(editingObject))
                     {

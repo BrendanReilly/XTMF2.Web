@@ -24,6 +24,7 @@ using Moq;
 using XTMF2.Web.Data.Models;
 using XTMF2.Web.Server.Controllers;
 using XTMF2.Web.Server.Mapping.Profiles;
+using XTMF2.Web.Server.Services;
 using XTMF2.Web.Server.Session;
 using Xunit;
 
@@ -37,7 +38,7 @@ namespace XTMF2.Web.UnitTests.Controllers
         private readonly XTMFRuntime _runtime;
         private readonly ModelSystemController _controller;
         private readonly UserSession _userSession;
-        private readonly ProjectSessions _projectSessions;
+        private readonly ModelSystemEditingSessions _projectSessions;
         private readonly ProjectController _projectController;
         private readonly string _userName;
 
@@ -52,18 +53,18 @@ namespace XTMF2.Web.UnitTests.Controllers
             var mapper = config.CreateMapper();
             TestHelper.CreateTestUser(_userName);
             _runtime = TestHelper.Runtime;
-            _projectSessions = new ProjectSessions();
+            _projectSessions = new ModelSystemEditingSessions(mapper, _runtime);
             _controller = new ModelSystemController(_runtime, Mock.Of<ILogger<ModelSystemController>>(), mapper, _projectSessions);
             _userSession = new UserSession(_runtime.UserController.GetUserByName(_userName));
             _projectController = new ProjectController(_runtime, Mock.Of<ILogger<ProjectController>>(), mapper,
-                _projectSessions);
+                _projectSessions, Mock.Of<UserTimeoutService>());
         }
 
         public void Dispose()
         {
-            if (_projectSessions.Sessions.ContainsKey(_userSession.User))
+            if (_projectSessions.ProjectSessions.ContainsKey(_userSession.User))
             {
-                _projectSessions.Sessions[_userSession.User].ForEach(i => { i.Dispose(); });
+                _projectSessions.ProjectSessions[_userSession.User].ForEach(i => { i.Dispose(); });
             }
 
             TestHelper.CleanUpTestContext(_runtime, _userName);
@@ -151,8 +152,8 @@ namespace XTMF2.Web.UnitTests.Controllers
             _controller.Get("projectName", "MSName", _userSession);
             _controller.Get("projectName", "MSName", _userSession);
             _controller.Get("projectName", "MSName", _userSession);
-            Assert.Single(_projectSessions.Sessions[_userSession.User]);
-            _projectSessions.Sessions[_userSession.User][0].Dispose();
+            Assert.Single(_projectSessions.ProjectSessions[_userSession.User]);
+            _projectSessions.ProjectSessions[_userSession.User][0].Dispose();
         }
 
 
