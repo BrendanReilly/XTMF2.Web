@@ -2,3 +2,9 @@
 
 See the README.md in the XTMF2.Web.Server project for instructions on regenerating the ApiClient.cs file.
 
+# Requirements
+
+The Libman package manager should be installed to restore some dependencies:
+
+> dotnet tool install -g Microsoft.Web.LibraryManager.Cli
+

@@ -2,7 +2,10 @@
 
 ## Requirements
 
-Node and NPM must be installed. 
+The Libman package manager should be installed to restore some dependencies:
+
+> dotnet tool install -g Microsoft.Web.LibraryManager.Cli
+
 
 ## Building
 

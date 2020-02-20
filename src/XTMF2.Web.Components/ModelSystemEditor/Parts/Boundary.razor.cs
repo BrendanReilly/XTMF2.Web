@@ -1,4 +1,4 @@
-﻿//    Copyright 2017-2019 University of Toronto
+//    Copyright 2017-2019 University of Toronto
 // 
 //    This file is part of XTMF2.
 // 
@@ -19,7 +19,7 @@ using XTMF2.Web.Data.Models;
 using Microsoft.AspNetCore.Components;
 namespace XTMF2.Web.Components
 {
-    public partial class ModelSystemEditor : ComponentBase
+    public partial class Boundary : ComponentBase
     {
         [Microsoft.AspNetCore.Components.Parameter]
         public ModelSystemModel ModelSystem { get; set; }
