@@ -39,7 +39,6 @@ namespace XTMF2.Web.Server.Session
         public Dictionary<ValueTuple<User, Project>, List<ModelSystemSession>> UserModelSystemEditingSessions { get; } =
         new Dictionary<ValueTuple<User, Project>, List<ModelSystemSession>>();
 
-
         /// <summary>
         /// Model system object reference tracker. Maps a model system session to the currently "active"
         /// view model.
@@ -111,7 +110,7 @@ namespace XTMF2.Web.Server.Session
         {
             if (!UserModelSystemEditingSessions.ContainsKey((user, project)))
             {
-                InitalizeNewModelSystemSessionForUser(user, project, session.ModelSystemHeader, out var commandError);
+                InitializeNewModelSystemSessionForUser(user, project, session.ModelSystemHeader, out var commandError);
             }
         }
 
@@ -142,7 +141,7 @@ namespace XTMF2.Web.Server.Session
         {
             if (!ModelSystemSessionExistsForUser(user, project, modelSystemHeader))
             {
-                InitalizeNewModelSystemSessionForUser(user, project, modelSystemHeader, out commandError);
+                InitializeNewModelSystemSessionForUser(user, project, modelSystemHeader, out commandError);
             }
             commandError = null;
             session = UserModelSystemEditingSessions[(user, project)].FirstOrDefault(s => s.ModelSystemHeader == modelSystemHeader);
@@ -165,26 +164,10 @@ namespace XTMF2.Web.Server.Session
         /// <param name="project"></param>
         /// <param name="header"></param>
         /// <returns></returns>
-        private bool InitalizeNewModelSystemSessionForUser(User user, Project project, ModelSystemHeader header, out CommandError commandError)
+        private bool InitializeNewModelSystemSessionForUser(User user, Project project, ModelSystemHeader header, out CommandError commandError)
         {
-            if (!ProjectSessions.TryGetValue(user, out var userProjectSessions))
-            {
-                userProjectSessions = new List<ProjectSession>();
-                ProjectSessions[user] = userProjectSessions;
-            }
-
-            var projectSession = userProjectSessions.FirstOrDefault(p => p.Project == project);
-            if (projectSession == null)
-            {
-                // add the new projectSession
-                if (!_runtime.ProjectController.GetProjectSession(user, project, out projectSession, out commandError))
-                {
-                    return false;
-                }
-                else
-                {
-                    userProjectSessions.Add(projectSession);
-                }
+            if(!GetProjectSession(user,project, out var projectSession, out commandError)) {
+                return false;
             }
             if (!projectSession.EditModelSystem(user, header, out var modelSystemSession, out commandError))
             {
@@ -197,6 +180,39 @@ namespace XTMF2.Web.Server.Session
             }
             ModelSystemEditingTrackers[modelSystemSession] = new ModelSystemEditingTracker(modelSystemSession, _mapper);
             sessions.Add(modelSystemSession);
+            return true;
+        }
+
+        /// <summary>
+        /// Attempts to get a project session for the user / project. If it does not exist, a new session is spun up.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="project"></param>
+        /// <param name="projectSession"></param>
+        /// <param name="commandError"></param>
+        /// <returns></returns>
+        public bool GetProjectSession(User user, Project project, out ProjectSession projectSession, out CommandError commandError)
+        {
+            if (!ProjectSessions.TryGetValue(user, out var userProjectSessions))
+            {
+                userProjectSessions = new List<ProjectSession>();
+                ProjectSessions[user] = userProjectSessions;
+            }
+
+            projectSession = userProjectSessions.FirstOrDefault(p => p.Project == project);
+            if (projectSession == null)
+            {
+                // add the new projectSession
+                if (!_runtime.ProjectController.GetProjectSession(user, project, out projectSession, out commandError))
+                {
+                    return false;
+                }
+                else
+                {
+                    userProjectSessions.Add(projectSession);
+                }
+            }
+            commandError = null;
             return true;
         }
 
@@ -235,9 +251,8 @@ namespace XTMF2.Web.Server.Session
         public void TrackProjectSessionForUser(User user, ProjectSession session)
         {
             if (!ProjectSessions.ContainsKey(user)) { ProjectSessions[user] = new List<ProjectSession>(); }
+
             ProjectSessions[user].Add(session);
         }
-
-
     }
 }
