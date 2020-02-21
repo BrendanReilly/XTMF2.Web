@@ -123,7 +123,7 @@ namespace XTMF2.Web.Server.Hubs
         /// <param name="eventArgs"></param>
         public void OnModelSystemChanged(object sender, ModelSystemChangedEventArgs eventArgs)
         {
-
+            SendModelSystemChangesAsync(nameof(eventArgs), eventArgs);
         }
     }
 }
