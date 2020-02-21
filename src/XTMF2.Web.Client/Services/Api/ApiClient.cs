@@ -1167,14 +1167,14 @@ namespace XTMF2.Web.Client.Services.Api
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task AddModelSystemStartAsync(string projectName, string modelSystemName, System.Guid parentId, BoundaryModel boundary)
+        public System.Threading.Tasks.Task RemoveBoundaryAsync(string projectName, string modelSystemName, System.Guid parentBoundaryId, System.Guid boundaryId)
         {
-            return AddModelSystemStartAsync(projectName, modelSystemName, parentId, boundary, System.Threading.CancellationToken.None);
+            return RemoveBoundaryAsync(projectName, modelSystemName, parentBoundaryId, boundaryId, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task AddModelSystemStartAsync(string projectName, string modelSystemName, System.Guid parentId, BoundaryModel boundary, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task RemoveBoundaryAsync(string projectName, string modelSystemName, System.Guid parentBoundaryId, System.Guid boundaryId, System.Threading.CancellationToken cancellationToken)
         {
             if (projectName == null)
                 throw new System.ArgumentNullException("projectName");
@@ -1182,14 +1182,18 @@ namespace XTMF2.Web.Client.Services.Api
             if (modelSystemName == null)
                 throw new System.ArgumentNullException("modelSystemName");
     
-            if (parentId == null)
-                throw new System.ArgumentNullException("parentId");
+            if (parentBoundaryId == null)
+                throw new System.ArgumentNullException("parentBoundaryId");
+    
+            if (boundaryId == null)
+                throw new System.ArgumentNullException("boundaryId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/start?");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/boundary?");
             urlBuilder_.Replace("{projectName}", System.Uri.EscapeDataString(ConvertToString(projectName, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{modelSystemName}", System.Uri.EscapeDataString(ConvertToString(modelSystemName, System.Globalization.CultureInfo.InvariantCulture)));
-            urlBuilder_.Append(System.Uri.EscapeDataString("parentId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(parentId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Append(System.Uri.EscapeDataString("parentBoundaryId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(parentBoundaryId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Append(System.Uri.EscapeDataString("boundaryId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(boundaryId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
     
             var client_ = _httpClient;
@@ -1197,181 +1201,6 @@ namespace XTMF2.Web.Client.Services.Api
             {
                 using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
                 {
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(boundary, _settings.Value));
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "404") 
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("A server side error occurred.", (int)response_.StatusCode, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == "201") 
-                        {
-                            return;
-                        }
-                        else
-                        if (status_ == "422") 
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("A server side error occurred.", (int)response_.StatusCode, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-            }
-        }
-    
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task AddCommentBlockAsync(string projectName, string modelSystemName, Path parentBoundaryPath, CommentBlockModel commentBlock)
-        {
-            return AddCommentBlockAsync(projectName, modelSystemName, parentBoundaryPath, commentBlock, System.Threading.CancellationToken.None);
-        }
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task AddCommentBlockAsync(string projectName, string modelSystemName, Path parentBoundaryPath, CommentBlockModel commentBlock, System.Threading.CancellationToken cancellationToken)
-        {
-            if (projectName == null)
-                throw new System.ArgumentNullException("projectName");
-    
-            if (modelSystemName == null)
-                throw new System.ArgumentNullException("modelSystemName");
-    
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/comment-block");
-            urlBuilder_.Replace("{projectName}", System.Uri.EscapeDataString(ConvertToString(projectName, System.Globalization.CultureInfo.InvariantCulture)));
-            urlBuilder_.Replace("{modelSystemName}", System.Uri.EscapeDataString(ConvertToString(modelSystemName, System.Globalization.CultureInfo.InvariantCulture)));
-    
-            var client_ = _httpClient;
-            try
-            {
-                using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
-                {
-                    if (parentBoundaryPath != null)
-                        request_.Headers.TryAddWithoutValidation("parentBoundaryPath", ConvertToString(parentBoundaryPath, System.Globalization.CultureInfo.InvariantCulture));
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(commentBlock, _settings.Value));
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "404") 
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("A server side error occurred.", (int)response_.StatusCode, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == "201") 
-                        {
-                            return;
-                        }
-                        else
-                        if (status_ == "422") 
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("A server side error occurred.", (int)response_.StatusCode, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-            }
-        }
-    
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task RemoveCommentBlockAsync(string projectName, string modelSystemName, string parentBoundaryPath, CommentBlockModel commentBlock)
-        {
-            return RemoveCommentBlockAsync(projectName, modelSystemName, parentBoundaryPath, commentBlock, System.Threading.CancellationToken.None);
-        }
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task RemoveCommentBlockAsync(string projectName, string modelSystemName, string parentBoundaryPath, CommentBlockModel commentBlock, System.Threading.CancellationToken cancellationToken)
-        {
-            if (projectName == null)
-                throw new System.ArgumentNullException("projectName");
-    
-            if (modelSystemName == null)
-                throw new System.ArgumentNullException("modelSystemName");
-    
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/comment-block");
-            urlBuilder_.Replace("{projectName}", System.Uri.EscapeDataString(ConvertToString(projectName, System.Globalization.CultureInfo.InvariantCulture)));
-            urlBuilder_.Replace("{modelSystemName}", System.Uri.EscapeDataString(ConvertToString(modelSystemName, System.Globalization.CultureInfo.InvariantCulture)));
-    
-            var client_ = _httpClient;
-            try
-            {
-                using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
-                {
-                    if (parentBoundaryPath != null)
-                        request_.Headers.TryAddWithoutValidation("parentBoundaryPath", ConvertToString(parentBoundaryPath, System.Globalization.CultureInfo.InvariantCulture));
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(commentBlock, _settings.Value));
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("DELETE");
     
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -1428,14 +1257,14 @@ namespace XTMF2.Web.Client.Services.Api
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task AddLinkAsync(string projectName, string modelSystemName, string parentBoundaryPath, CommentBlockModel commentBlock)
+        public System.Threading.Tasks.Task AddModelSystemStartAsync(string projectName, string modelSystemName, System.Guid parentId, StartModel startModel)
         {
-            return AddLinkAsync(projectName, modelSystemName, parentBoundaryPath, commentBlock, System.Threading.CancellationToken.None);
+            return AddModelSystemStartAsync(projectName, modelSystemName, parentId, startModel, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task AddLinkAsync(string projectName, string modelSystemName, string parentBoundaryPath, CommentBlockModel commentBlock, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task AddModelSystemStartAsync(string projectName, string modelSystemName, System.Guid parentId, StartModel startModel, System.Threading.CancellationToken cancellationToken)
         {
             if (projectName == null)
                 throw new System.ArgumentNullException("projectName");
@@ -1443,19 +1272,22 @@ namespace XTMF2.Web.Client.Services.Api
             if (modelSystemName == null)
                 throw new System.ArgumentNullException("modelSystemName");
     
+            if (parentId == null)
+                throw new System.ArgumentNullException("parentId");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/link");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/start?");
             urlBuilder_.Replace("{projectName}", System.Uri.EscapeDataString(ConvertToString(projectName, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{modelSystemName}", System.Uri.EscapeDataString(ConvertToString(modelSystemName, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(System.Uri.EscapeDataString("parentId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(parentId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Length--;
     
             var client_ = _httpClient;
             try
             {
                 using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
                 {
-                    if (parentBoundaryPath != null)
-                        request_.Headers.TryAddWithoutValidation("parentBoundaryPath", ConvertToString(parentBoundaryPath, System.Globalization.CultureInfo.InvariantCulture));
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(commentBlock, _settings.Value));
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(startModel, _settings.Value));
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
@@ -1514,14 +1346,14 @@ namespace XTMF2.Web.Client.Services.Api
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task AddNodeGenerateParameteresAsync(string projectName, string modelSystemName, string parentBoundaryPath)
+        public System.Threading.Tasks.Task AddCommentBlockAsync(string projectName, string modelSystemName, System.Guid parentId, CommentBlockModel commentBlock)
         {
-            return AddNodeGenerateParameteresAsync(projectName, modelSystemName, parentBoundaryPath, System.Threading.CancellationToken.None);
+            return AddCommentBlockAsync(projectName, modelSystemName, parentId, commentBlock, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task AddNodeGenerateParameteresAsync(string projectName, string modelSystemName, string parentBoundaryPath, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task AddCommentBlockAsync(string projectName, string modelSystemName, System.Guid parentId, CommentBlockModel commentBlock, System.Threading.CancellationToken cancellationToken)
         {
             if (projectName == null)
                 throw new System.ArgumentNullException("projectName");
@@ -1529,11 +1361,207 @@ namespace XTMF2.Web.Client.Services.Api
             if (modelSystemName == null)
                 throw new System.ArgumentNullException("modelSystemName");
     
+            if (parentId == null)
+                throw new System.ArgumentNullException("parentId");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/node-generate-parameters?");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/comment-block?");
             urlBuilder_.Replace("{projectName}", System.Uri.EscapeDataString(ConvertToString(projectName, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{modelSystemName}", System.Uri.EscapeDataString(ConvertToString(modelSystemName, System.Globalization.CultureInfo.InvariantCulture)));
-            urlBuilder_.Append(System.Uri.EscapeDataString("parentBoundaryPath") + "=").Append(System.Uri.EscapeDataString(parentBoundaryPath != null ? ConvertToString(parentBoundaryPath, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
+            urlBuilder_.Append(System.Uri.EscapeDataString("parentId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(parentId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Length--;
+    
+            var client_ = _httpClient;
+            try
+            {
+                using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(commentBlock, _settings.Value));
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+    
+                    PrepareRequest(client_, request_, urlBuilder_);
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+                    PrepareRequest(client_, request_, url_);
+    
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+    
+                        ProcessResponse(client_, response_);
+    
+                        var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "404") 
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("A server side error occurred.", (int)response_.StatusCode, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == "201") 
+                        {
+                            return;
+                        }
+                        else
+                        if (status_ == "403") 
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("A server side error occurred.", (int)response_.StatusCode, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == "422") 
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("A server side error occurred.", (int)response_.StatusCode, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ != "200" && status_ != "204")
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (response_ != null)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+            }
+        }
+    
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task RemoveCommentBlockAsync(string projectName, string modelSystemName, System.Guid parentBoundaryId, System.Guid commentBlockId)
+        {
+            return RemoveCommentBlockAsync(projectName, modelSystemName, parentBoundaryId, commentBlockId, System.Threading.CancellationToken.None);
+        }
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task RemoveCommentBlockAsync(string projectName, string modelSystemName, System.Guid parentBoundaryId, System.Guid commentBlockId, System.Threading.CancellationToken cancellationToken)
+        {
+            if (projectName == null)
+                throw new System.ArgumentNullException("projectName");
+    
+            if (modelSystemName == null)
+                throw new System.ArgumentNullException("modelSystemName");
+    
+            if (parentBoundaryId == null)
+                throw new System.ArgumentNullException("parentBoundaryId");
+    
+            if (commentBlockId == null)
+                throw new System.ArgumentNullException("commentBlockId");
+    
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/comment-block?");
+            urlBuilder_.Replace("{projectName}", System.Uri.EscapeDataString(ConvertToString(projectName, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Replace("{modelSystemName}", System.Uri.EscapeDataString(ConvertToString(modelSystemName, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(System.Uri.EscapeDataString("parentBoundaryId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(parentBoundaryId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Append(System.Uri.EscapeDataString("commentBlockId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(commentBlockId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Length--;
+    
+            var client_ = _httpClient;
+            try
+            {
+                using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
+    
+                    PrepareRequest(client_, request_, urlBuilder_);
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+                    PrepareRequest(client_, request_, url_);
+    
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+    
+                        ProcessResponse(client_, response_);
+    
+                        var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "404") 
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("A server side error occurred.", (int)response_.StatusCode, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
+                        }
+                        else
+                        if (status_ == "422") 
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("A server side error occurred.", (int)response_.StatusCode, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ != "200" && status_ != "204")
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (response_ != null)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+            }
+        }
+    
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task AddLinkAsync(string projectName, string modelSystemName, System.Guid originNodeId, System.Guid destinationNodeId, System.Guid originHookId)
+        {
+            return AddLinkAsync(projectName, modelSystemName, originNodeId, destinationNodeId, originHookId, System.Threading.CancellationToken.None);
+        }
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task AddLinkAsync(string projectName, string modelSystemName, System.Guid originNodeId, System.Guid destinationNodeId, System.Guid originHookId, System.Threading.CancellationToken cancellationToken)
+        {
+            if (projectName == null)
+                throw new System.ArgumentNullException("projectName");
+    
+            if (modelSystemName == null)
+                throw new System.ArgumentNullException("modelSystemName");
+    
+            if (originNodeId == null)
+                throw new System.ArgumentNullException("originNodeId");
+    
+            if (destinationNodeId == null)
+                throw new System.ArgumentNullException("destinationNodeId");
+    
+            if (originHookId == null)
+                throw new System.ArgumentNullException("originHookId");
+    
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/link?");
+            urlBuilder_.Replace("{projectName}", System.Uri.EscapeDataString(ConvertToString(projectName, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Replace("{modelSystemName}", System.Uri.EscapeDataString(ConvertToString(modelSystemName, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(System.Uri.EscapeDataString("originNodeId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(originNodeId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Append(System.Uri.EscapeDataString("destinationNodeId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(destinationNodeId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Append(System.Uri.EscapeDataString("originHookId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(originHookId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
     
             var client_ = _httpClient;
@@ -1598,14 +1626,14 @@ namespace XTMF2.Web.Client.Services.Api
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task AddNodeAsync(string projectName, string modelSystemName, string parentBoundaryPath, CommentBlockModel commentBlock)
+        public System.Threading.Tasks.Task AddNodeGenerateParametersAsync(string projectName, string modelSystemName, System.Guid parentId, NodeModel nodeModel)
         {
-            return AddNodeAsync(projectName, modelSystemName, parentBoundaryPath, commentBlock, System.Threading.CancellationToken.None);
+            return AddNodeGenerateParametersAsync(projectName, modelSystemName, parentId, nodeModel, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task AddNodeAsync(string projectName, string modelSystemName, string parentBoundaryPath, CommentBlockModel commentBlock, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task AddNodeGenerateParametersAsync(string projectName, string modelSystemName, System.Guid parentId, NodeModel nodeModel, System.Threading.CancellationToken cancellationToken)
         {
             if (projectName == null)
                 throw new System.ArgumentNullException("projectName");
@@ -1613,19 +1641,22 @@ namespace XTMF2.Web.Client.Services.Api
             if (modelSystemName == null)
                 throw new System.ArgumentNullException("modelSystemName");
     
+            if (parentId == null)
+                throw new System.ArgumentNullException("parentId");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/node");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/node-generate-parameters?");
             urlBuilder_.Replace("{projectName}", System.Uri.EscapeDataString(ConvertToString(projectName, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{modelSystemName}", System.Uri.EscapeDataString(ConvertToString(modelSystemName, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(System.Uri.EscapeDataString("parentId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(parentId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Length--;
     
             var client_ = _httpClient;
             try
             {
                 using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
                 {
-                    if (parentBoundaryPath != null)
-                        request_.Headers.TryAddWithoutValidation("parentBoundaryPath", ConvertToString(parentBoundaryPath, System.Globalization.CultureInfo.InvariantCulture));
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(commentBlock, _settings.Value));
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(nodeModel, _settings.Value));
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
@@ -1684,14 +1715,14 @@ namespace XTMF2.Web.Client.Services.Api
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task RemoveBoundaryAsync(string projectName, string modelSystemName, string id)
+        public System.Threading.Tasks.Task AddNodeAsync(string projectName, string modelSystemName, NodeModel nodeModel, System.Guid parentId)
         {
-            return RemoveBoundaryAsync(projectName, modelSystemName, id, System.Threading.CancellationToken.None);
+            return AddNodeAsync(projectName, modelSystemName, nodeModel, parentId, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task RemoveBoundaryAsync(string projectName, string modelSystemName, string id, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task AddNodeAsync(string projectName, string modelSystemName, NodeModel nodeModel, System.Guid parentId, System.Threading.CancellationToken cancellationToken)
         {
             if (projectName == null)
                 throw new System.ArgumentNullException("projectName");
@@ -1699,21 +1730,25 @@ namespace XTMF2.Web.Client.Services.Api
             if (modelSystemName == null)
                 throw new System.ArgumentNullException("modelSystemName");
     
-            if (id == null)
-                throw new System.ArgumentNullException("id");
+            if (parentId == null)
+                throw new System.ArgumentNullException("parentId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/boundary/{id}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/node?");
             urlBuilder_.Replace("{projectName}", System.Uri.EscapeDataString(ConvertToString(projectName, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{modelSystemName}", System.Uri.EscapeDataString(ConvertToString(modelSystemName, System.Globalization.CultureInfo.InvariantCulture)));
-            urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(System.Uri.EscapeDataString("parentId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(parentId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Length--;
     
             var client_ = _httpClient;
             try
             {
                 using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
                 {
-                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(nodeModel, _settings.Value));
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     var url_ = urlBuilder_.ToString();
@@ -1739,7 +1774,7 @@ namespace XTMF2.Web.Client.Services.Api
                             throw new ApiException("A server side error occurred.", (int)response_.StatusCode, responseText_, headers_, null);
                         }
                         else
-                        if (status_ == "200") 
+                        if (status_ == "201") 
                         {
                             return;
                         }
@@ -1769,14 +1804,14 @@ namespace XTMF2.Web.Client.Services.Api
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task RemoveModelSystemStartAsync(string projectName, string modelSystemName, string id)
+        public System.Threading.Tasks.Task RemoveModelSystemStartAsync(string projectName, string modelSystemName, System.Guid startId)
         {
-            return RemoveModelSystemStartAsync(projectName, modelSystemName, id, System.Threading.CancellationToken.None);
+            return RemoveModelSystemStartAsync(projectName, modelSystemName, startId, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task RemoveModelSystemStartAsync(string projectName, string modelSystemName, string id, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task RemoveModelSystemStartAsync(string projectName, string modelSystemName, System.Guid startId, System.Threading.CancellationToken cancellationToken)
         {
             if (projectName == null)
                 throw new System.ArgumentNullException("projectName");
@@ -1784,14 +1819,15 @@ namespace XTMF2.Web.Client.Services.Api
             if (modelSystemName == null)
                 throw new System.ArgumentNullException("modelSystemName");
     
-            if (id == null)
-                throw new System.ArgumentNullException("id");
+            if (startId == null)
+                throw new System.ArgumentNullException("startId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/model-system-start/{id}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ModelSystemEditor/projects/{projectName}/model-systems/{modelSystemName}/model-system-start?");
             urlBuilder_.Replace("{projectName}", System.Uri.EscapeDataString(ConvertToString(projectName, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{modelSystemName}", System.Uri.EscapeDataString(ConvertToString(modelSystemName, System.Globalization.CultureInfo.InvariantCulture)));
-            urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(System.Uri.EscapeDataString("startId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(startId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Length--;
     
             var client_ = _httpClient;
             try
@@ -2482,7 +2518,7 @@ namespace XTMF2.Web.Client.Services.Api
     
         [Newtonsoft.Json.JsonProperty("ContainedWithinId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid ContainWithinId { get; set; }
+        public System.Guid ContainedWithinId { get; set; }
     
         [Newtonsoft.Json.JsonProperty("Type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Type { get; set; }
@@ -2497,8 +2533,9 @@ namespace XTMF2.Web.Client.Services.Api
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid Id { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("Location", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Rectangle Location { get; set; }
+        [Newtonsoft.Json.JsonProperty("Location", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public Rectangle Location { get; set; } = new Rectangle();
     
         [Newtonsoft.Json.JsonProperty("ObjectReference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public object ObjectReference { get; set; }
@@ -2527,8 +2564,8 @@ namespace XTMF2.Web.Client.Services.Api
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.4.0 (Newtonsoft.Json v12.0.0.0)")]
     public partial class CommentBlockModel : ViewObject
     {
-        [Newtonsoft.Json.JsonProperty("Text", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Text { get; set; }
+        [Newtonsoft.Json.JsonProperty("Comment", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Comment { get; set; }
     
     
     }
@@ -2576,19 +2613,6 @@ namespace XTMF2.Web.Client.Services.Api
     
         [Newtonsoft.Json.JsonProperty("Type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Type { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.4.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class Path 
-    {
-        [Newtonsoft.Json.JsonProperty("Parts", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<string> Parts { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("Id", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid Id { get; set; }
     
     
     }

@@ -1,0 +1,18 @@
+[
+    {
+        "outputFile": "wwwroot/js/xtmf2.js",
+        "inputFile": "Shared/Xtmf2.js",
+        "includeInProject": true,
+        "options": {
+            "sourceMap": true
+        }
+    },
+    {
+        "outputFile": "wwwroot/js/notification-service.js",
+        "inputFile": "Services/NotificationService.js",
+        "includeInProject": true,
+        "options": {
+            "sourceMap": true
+        }
+    }
+]
