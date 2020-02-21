@@ -19,6 +19,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Serilog" Version="2.9.0" />
     <PackageReference Include="Serilog.Sinks.BrowserConsole" Version="1.0.0-dev-00012" />
+    <PackageReference Include="BuildWebCompiler" Version="1.12.405" />
 
   </ItemGroup>
 

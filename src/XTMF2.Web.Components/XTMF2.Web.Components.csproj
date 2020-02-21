@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="BlazorQuery" Version="0.0.1" />
+    <PackageReference Include="BuildWebCompiler" Version="1.12.405" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.2.0-preview1.20073.1" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.2.0-preview1.20073.1" />
   </ItemGroup>
@@ -27,8 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ResourceFiles Include="node_modules/notyf/notyf.min.js"/>
-    <ResourceFiles Include="node_modules/notyf/notyf.js"/>
+    <ResourceFiles Include="node_modules/notyf/notyf.min.js" />
+    <ResourceFiles Include="node_modules/notyf/notyf.js" />
   </ItemGroup>
 
 
