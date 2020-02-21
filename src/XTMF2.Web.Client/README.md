@@ -6,5 +6,6 @@ See the README.md in the XTMF2.Web.Server project for instructions on regenerati
 
 The Libman package manager should be installed to restore some dependencies:
 
-> dotnet tool install -g Microsoft.Web.LibraryManager.Cli
-
+```bash
+dotnet tool install -g Microsoft.Web.LibraryManager.Cli
+```
