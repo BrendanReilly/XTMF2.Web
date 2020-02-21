@@ -121,12 +121,11 @@ namespace XTMF2.Web.Server.Session
         /// <returns>The editing model for the passed model system / session</returns>
         public ModelSystemEditingModel GetModelSystemEditingModel(ModelSystemSession session)
         {
-            if (!ModelSystemEditingModels.TryGetValue(session, out var model))
+            if (!ModelSystemEditingTrackers.TryGetValue(session, out var tracker))
             {
-                model = _mapper.Map<ModelSystemEditingModel>(session.ModelSystem);
-                ModelSystemEditingModels[session] = model;
+                return null;
             }
-            return model;
+            return tracker.ModelSystem;
         }
 
         /// <summary>
