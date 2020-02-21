@@ -91,7 +91,7 @@ namespace XTMF2.Web.Server.Controllers
         /// <summary>
         ///     Gets the specified project.
         /// </summary>
-        /// /// <param name="projectName"></param>
+        /// <param name="projectName"></param>
         /// <param  name="user"></param>
         /// <returns></returns>
         [HttpGet("{projectName}")]
@@ -120,8 +120,7 @@ namespace XTMF2.Web.Server.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(IEnumerable<ProjectModel>), StatusCodes.Status200OK)]
-        // [Authorize(Policy = nameof(ModelSystemAccessRequirement))]
-        public ActionResult<IEnumerable<ProjectModel>> List([FromServices] UserSession state, Boundary parentBoundary = null)
+        public ActionResult<IEnumerable<ProjectModel>> List([FromServices] UserSession state)
         {
             return new OkObjectResult(_mapper.Map<List<ProjectModel>>(state.Projects));
         }

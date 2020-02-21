@@ -11,22 +11,28 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var project in Projects)
-                {
-                    <tr>
-                        <td>
-                            <NavLink class="nav-link" href=@($"project/{project.Name}")>
-                                @project.Name
-                            </NavLink>
-                        </td>
-                        <td>
-                            <button @onclick="@(() => DeleteProject(project))" type="button" class="btn btn-sm btn-danger" aria-label="error">
 
-                                <clr-icon shape="error-standard"></clr-icon>
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
+                @if(IsLoaded) {
+                    @foreach (var project in Projects)
+                    {
+                        <tr>
+                            <td>
+                                <NavLink class="nav-link" href=@($"project/{project.Name}")>
+                                    @project.Name
+                                </NavLink>
+                            </td>
+                            <td>
+                                <button @onclick="@(() => DeleteProject(project))" type="button" class="btn btn-sm btn-danger" aria-label="error">
+
+                                    <clr-icon shape="error-standard"></clr-icon>
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else {
+                        <span>Loading</span>
                 }
             </tbody>
         </table>

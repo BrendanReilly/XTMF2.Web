@@ -10,21 +10,21 @@
         <div class="sidebar-logo">
             <a class="navbar-brand" href="#">
                 <img src="img/xtmf.png" width="32" height="32" class="d-inline-block align-top" alt="">
-                XTMF2
+                <span class="logo-text">XTMF2</span>
             </a>
         </div>
         <div class="list-group">
              <NavLink class="nav-link nav-item list-group-item list-group-item-action" href="" Match="NavLinkMatch.All">
-                <i class="fas fa-columns mr-3"></i>Dashboard
+                <i class="fas fa-columns"></i><span class=" ml-3 nav-link-text">Dashboard</span>
             </NavLink>
             <NavLink class="nav-link nav-item list-group-item list-group-item-action" href="projects" Match="NavLinkMatch.Prefix">
-                <i class="fas fa-project-diagram  mr-3"></i>Projects
+                <i class="fas fa-project-diagram "></i><span class=" ml-3 nav-link-text">Projects</span>
             </NavLink>
             <a href="#" class="list-group-item list-group-item-action">
-                <i class="fas fa-server  mr-3"></i>Model System Runs
+                <i class="fas fa-server "></i><span class=" ml-3 nav-link-text">Model System Runs</span>
             </a>
             <NavLink class="nav-link nav-item list-group-item list-group-item-action" href="system" Match="NavLinkMatch.Prefix">
-                <i class="fas fa-tools mr-3"></i>System
+                <i class="fas fa-tools"></i><span class=" ml-3 nav-link-text">System</span>
             </NavLink>
         </div>
     </nav>
@@ -32,7 +32,7 @@
     <div id="main-content">
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
 
-            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <button id="sidebar-toggle" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbar">
@@ -67,10 +67,19 @@
 
 @code {
 
+        [Inject] protected  IJSRuntime JSRuntime { get;set;}
+
         [Inject] protected AuthenticationService AuthenticationService {get;set;}
 
         protected override async Task OnInitializedAsync() {
             var result = await AuthenticationService.LoginAsync("local");
+        }
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await JSRuntime.InvokeVoidAsync("afterRender");
+            }
         }
 
     }

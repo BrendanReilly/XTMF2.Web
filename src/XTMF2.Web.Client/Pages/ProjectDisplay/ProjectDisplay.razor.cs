@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using XTMF2.Web.Client.Services;
 using XTMF2.Web.Client.Services.Api;
 using XTMF2.Web.Components.Util;
 using XTMF2.Web.Data.Models;
@@ -57,6 +58,8 @@ namespace XTMF2.Web.Client.Pages
 
         [Inject] protected ModelSystemClient ModelSystemClient { get; set; }
 
+        [Inject] protected NotificationService NotificationService { get; set; }
+
         protected async void NewModelSystemSubmit(string input)
         {
             var modelSystem = new ModelSystemModel()
@@ -64,20 +67,15 @@ namespace XTMF2.Web.Client.Pages
                 Name = input
             };
             var model = await ModelSystemClient.CreateAsync(ProjectName, modelSystem);
-
             Logger.LogInformation("Created");
+            NotificationService.SuccessMessage($"Model system created: {modelSystem.Name}");
             ModelSystems.Add(modelSystem);
             this.StateHasChanged();
-            /*
-            string error = null;
-            if (!_projectSession.CreateNewModelSystem(XtmfUser, input, out var modelSystem, ref error))
-            {
-                Logger.LogError("Unable to create model system: " + input);
-            }
-            else
-            {
-                Logger.LogInformation("Model system created: " + input);
-            } */
+        }
+
+        protected void NewModelSystemClicked()
+        {
+            _inputDialog.Show();
         }
 
         /// <summary>
@@ -86,16 +84,18 @@ namespace XTMF2.Web.Client.Pages
         /// <param name="modelSystem"></param>
         protected void DeleteModelSystem(ModelSystemModel modelSystem)
         {
-            /*
-            string error = null;
-            if (!_projectSession.RemoveModelSystem(XtmfUser, modelSystem, ref error))
+            try
             {
-                Logger.LogError("Unable to remove model system: " + modelSystem.Name);
+                ModelSystemClient.DeleteAsync(ProjectName, modelSystem.Name);
+                ModelSystems.Remove(modelSystem);
+                Logger.LogInformation($"Model system deleted: {modelSystem.Name}");
+                NotificationService.ErrorMessage($"Model system deleted: {modelSystem.Name}");
+                this.StateHasChanged();
             }
-            else
+            catch (ApiException e)
             {
-                Logger.LogInformation("Model system removed: " + modelSystem.Name);
-            } */
+                Logger.LogError(e, $"Unable to delete model sytem {modelSystem.Name}");
+            }
         }
 
         /// <summary>

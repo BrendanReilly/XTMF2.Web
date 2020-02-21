@@ -46,6 +46,8 @@ namespace XTMF2.Web.Client.Pages
         /// </summary>
         public BSModal NewProjectModal;
 
+        protected bool IsLoaded { get; set; }
+
         [Inject] protected ProjectClient ProjectClient { get; set; }
 
         protected ILogger Logger { get; } = Log.ForContext<ProjectsList>();
@@ -75,6 +77,7 @@ namespace XTMF2.Web.Client.Pages
             Logger.Information("Projects List loading.");
             var projects = await ProjectClient.ListAsync();
             Projects.AddRange(projects);
+            IsLoaded = true;
         }
 
         /// <summary>

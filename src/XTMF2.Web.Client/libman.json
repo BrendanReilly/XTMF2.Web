@@ -40,8 +40,40 @@
       "library": "font-awesome@5.12.1",
       "destination": "wwwroot/lib/font-awesome",
       "files": [
-        "css/all.min.css",
-        "css/solid.min.css"
+        "css/solid.min.css",
+        "webfonts/fa-solid-900.woff",
+        "webfonts/fa-solid-900.woff2",
+        "webfonts/fa-solid-900.ttf",
+        "webfonts/fa-solid-900.eot"
+      ]
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "typeface-nunito-sans@0.0.72",
+      "destination": "wwwroot/lib/typeface-nunito-sans",
+      "files": [
+        "index.min.css",
+        "index.css",
+        "files/nunito-sans-latin-300.woff",
+        "files/nunito-sans-latin-300.woff2",
+        "files/nunito-sans-latin-400.woff",
+        "files/nunito-sans-latin-400.woff2",
+        "files/nunito-sans-latin-400italic.woff",
+        "files/nunito-sans-latin-400italic.woff2",
+        "files/nunito-sans-latin-700.woff",
+        "files/nunito-sans-latin-700.woff2",
+        "files/nunito-sans-latin-800.woff",
+        "files/nunito-sans-latin-800.woff2",
+        "files/nunito-sans-latin-900.woff",
+        "files/nunito-sans-latin-900.woff2"
+      ]
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "placeholder-loading@0.2.5",
+      "destination": "wwwroot/lib/placeholder-loading",
+      "files" : [
+        "dist/css/placeholder-loading.min.css"
       ]
     }
   ]
