@@ -36,7 +36,7 @@ namespace XTMF2.Web.Client.Services
         /// <returns></returns>
         public async void SuccessMessage(string message)
         {
-            await _runtime.InvokeAsync<string>("xtmf.successMessage", message);
+            await _runtime.InvokeAsync<string>("xtmfNotificationService.successMessage", message);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace XTMF2.Web.Client.Services
         /// <param name="message"></param>
         /// <returns></returns>
         public async void ErrorMessage(string message) {
-            await _runtime.InvokeAsync<string>("xtmf.errorMessage", message);
+            await _runtime.InvokeAsync<string>("xtmfNotificationService.errorMessage", message);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace XTMF2.Web.Client.Services
         /// <param name="message"></param>
         /// <returns></returns>
         public async void WarningMessage(string message) {
-            await _runtime.InvokeAsync<string>("xtmf.warningMessage", message);
+            await _runtime.InvokeAsync<string>("xtmfNotificationService.warningMessage", message);
         }
     }
 }

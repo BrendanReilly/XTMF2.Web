@@ -53,14 +53,23 @@ button i {
   opacity: 0.2;
 }
 
+#main-sidebar a.active i {
+  opacity: 0.8;
+}
+
 #main-sidebar .list-group-item {
   background: transparent;
+  margin-top: 0;
+}
+
+#main-sidebar .list-group-item {
+  border: none;
 }
 
 #main-sidebar .list-group {
   align-content: center;
   flex-grow: 1;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 #main-sidebar.active {
