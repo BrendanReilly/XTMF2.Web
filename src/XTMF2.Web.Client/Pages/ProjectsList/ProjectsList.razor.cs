@@ -27,6 +27,7 @@ using XTMF2.Web.Client.Services.Api;
 using XTMF2.Web.Components.Util;
 using XTMF2.Web.Data.Models;
 using XTMF2.Web.Client.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace XTMF2.Web.Client.Pages
 {

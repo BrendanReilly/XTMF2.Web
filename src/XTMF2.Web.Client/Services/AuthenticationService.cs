@@ -30,7 +30,7 @@ namespace XTMF2.Web.Client.Services
         private AuthenticationClient _client;
         private ISessionStorageService _storage;
         private ILogger<AuthenticationService> _logger;
-        private AuthenticationStateProvider _authProvider;
+        private XtmfAuthenticationStateProvider _authProvider;
         public event EventHandler OnAuthenticated;
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace XTMF2.Web.Client.Services
         /// <param name="logger"></param>
         /// <param name="authProvider"></param>
         public AuthenticationService(AuthenticationClient client, ISessionStorageService storage, ILogger<AuthenticationService> logger,
-        AuthenticationStateProvider authProvider)
+        XtmfAuthenticationStateProvider authProvider)
         {
             _client = client;
             _storage = storage;
@@ -79,6 +79,7 @@ namespace XTMF2.Web.Client.Services
                 return false;
             }
             _logger.LogInformation("Logged in.");
+            _authProvider.NotifyUpdate(true);
             OnAuthenticated?.Invoke(this, new EventArgs());
             return true;
         }
