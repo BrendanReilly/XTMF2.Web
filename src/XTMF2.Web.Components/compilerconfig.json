@@ -1,0 +1,13 @@
+[
+    {
+        "outputFile": "wwwroot/transformed.css",
+        "inputFile": "ModelSystemEditor/Style.scss",
+        "minify": {
+            "enabled": true
+        },
+        "includeInProject": true,
+        "options": {
+            "sourceMap": true
+        }
+    }
+]

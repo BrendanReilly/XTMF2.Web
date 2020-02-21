@@ -1,0 +1,17 @@
+
+@using Microsoft.AspNetCore.Components.Authorization
+
+<Router AppAssembly="@typeof(Program).Assembly">
+    <Found Context="routeData">
+        <XTMF2.Web.Client.Contexts.SessionContext></XTMF2.Web.Client.Contexts.SessionContext>
+        <RouteView   RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+    </Found>
+    
+    <NotFound>
+         <CascadingAuthenticationState>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p>Sorry, there's nothing at this address.</p>
+        </LayoutView>
+        </CascadingAuthenticationState>
+    </NotFound>
+</Router>
