@@ -41,6 +41,7 @@
       "destination": "wwwroot/lib/font-awesome",
       "files": [
         "css/solid.min.css",
+        "css/all.min.css",
         "webfonts/fa-solid-900.woff",
         "webfonts/fa-solid-900.woff2",
         "webfonts/fa-solid-900.ttf",
