@@ -1,9 +1,9 @@
+@using Microsoft.AspNetCore.Authorization
 @page "/projects"
 @namespace XTMF2.Web.Client.Pages
-@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+@attribute [Authorize]
 <BasePage ShowSideNav="false">
-
-    <Content>
+<ChildContent>
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -37,13 +37,10 @@
                 }
             </tbody>
         </table>
-
         <BSButton Color="Color.Primary" OnClick="@OpenNewProjectDialog">Create New Project</BSButton>
 
         <InputRequestDialog @ref="_inputRequestDialog" DialogTitle="Test" InputName="Project Name" OnSubmit="OnNewProjectFormSubmit"></InputRequestDialog>
-
-    </Content>
-
+</ChildContent>
     <Title>Projects</Title>
 
 </BasePage>

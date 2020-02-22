@@ -16,6 +16,7 @@
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -30,8 +31,17 @@ namespace XTMF2.Web.Client.Services
         private AuthenticationClient _client;
         private ISessionStorageService _storage;
         private ILogger<AuthenticationService> _logger;
-        private XtmfAuthenticationStateProvider _authProvider;
-        public event EventHandler OnAuthenticated;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event EventHandler<AuthenticatedEventArgs> Authenticated;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <value></value>
+        public bool IsLoggedIn { get; private set; }
 
         /// <summary>
         /// 
@@ -40,13 +50,11 @@ namespace XTMF2.Web.Client.Services
         /// <param name="storage"></param>
         /// <param name="logger"></param>
         /// <param name="authProvider"></param>
-        public AuthenticationService(AuthenticationClient client, ISessionStorageService storage, ILogger<AuthenticationService> logger,
-        XtmfAuthenticationStateProvider authProvider)
+        public AuthenticationService(AuthenticationClient client, ISessionStorageService storage, ILogger<AuthenticationService> logger)
         {
             _client = client;
             _storage = storage;
             _logger = logger;
-            _authProvider = authProvider;
         }
 
         /// <summary>
@@ -71,16 +79,17 @@ namespace XTMF2.Web.Client.Services
                 result = await _client.LoginAsync("local");
                 await _storage.SetItemAsync("token", result);
                 await _storage.SetItemAsync("userName", userName);
-
             }
             catch (ApiException exception)
             {
+                IsLoggedIn = false;
                 _logger.LogError("Invalid login.", exception);
                 return false;
             }
+            Thread.Sleep(10000);
+            IsLoggedIn = true;
             _logger.LogInformation("Logged in.");
-            _authProvider.NotifyUpdate(true);
-            OnAuthenticated?.Invoke(this, new EventArgs());
+            Authenticated?.Invoke(this, new AuthenticatedEventArgs(userName,result));
             return true;
         }
 
@@ -93,5 +102,21 @@ namespace XTMF2.Web.Client.Services
             await _client.LogoutAsync();
         }
 
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class AuthenticatedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public AuthenticatedEventArgs(string userName, string token) => (UserName,Token) = (userName,token);
+        public string UserName { get; private set; }
+        public string Token { get; private set; }
     }
 }

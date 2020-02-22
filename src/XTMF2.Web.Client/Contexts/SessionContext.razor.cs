@@ -18,6 +18,7 @@ using System;
 using System.Threading.Tasks;
 using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.SignalR.Client;
 using XTMF2.Web.Client.Services;
 
@@ -34,7 +35,7 @@ namespace XTMF2.Web.Client.Contexts
         private HubConnection _hubConnection;
 
         [Inject]
-        public AuthenticationService AuthenticationService { get; set; }
+        public XtmfAuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
         [Inject]
         public ISessionStorageService StorageService { get; set; }
@@ -48,25 +49,28 @@ namespace XTMF2.Web.Client.Contexts
         /// <returns></returns>
         protected override void OnInitialized()
         {
-            AuthenticationService.OnAuthenticated += OnAuthenticated;
+            AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
         }
 
         /// <summary>
-        /// Connects to the blazor session hub on connected
+        /// 
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
+        /// <param name="authStateTask"></param>
         /// <returns></returns>
-        private async void OnAuthenticated(object sender, EventArgs eventArgs)
+        private async void OnAuthenticationStateChanged(Task<AuthenticationState> authStateTask)
         {
-            _hubConnection = new HubConnectionBuilder()
-                        .WithUrl(NavigationManager.ToAbsoluteUri("/session-context-hub"), options =>
-                        {
-                            //token is the JWT access token
-                            options.AccessTokenProvider = () => StorageService.GetItemAsync<string>("token");
-                        })
-                        .Build();
-            await _hubConnection.StartAsync();
+            var authState = await authStateTask;
+            if (authState.User.Identity.IsAuthenticated)
+            {
+                _hubConnection = new HubConnectionBuilder()
+                            .WithUrl(NavigationManager.ToAbsoluteUri("/session-context-hub"), options =>
+                            {
+                                //token is the JWT access token
+                                options.AccessTokenProvider = () => StorageService.GetItemAsync<string>("token");
+                            })
+                            .Build();
+                await _hubConnection.StartAsync();
+            }
         }
 
     }

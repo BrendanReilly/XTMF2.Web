@@ -63,12 +63,12 @@ namespace XTMF2.Web.Client
                     (XtmfAuthenticationStateProvider)provider.GetService<AuthenticationStateProvider>(),
                     (ISessionStorageService)provider.GetService<ISessionStorageService>());
             });
-            services.AddAuthorizationCore();
             services.AddScoped<ModelSystemClient>();
             services.AddScoped<AuthenticationService>();
             services.AddSingleton<NotificationService>();
             services.AddLogging(builder => { builder.SetMinimumLevel(LogLevel.Trace); });
             services.AddBlazoredSessionStorage();
+            services.AddAuthorizationCore();
         }
 
         /// <summary>

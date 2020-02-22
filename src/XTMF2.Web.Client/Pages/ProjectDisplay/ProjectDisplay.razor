@@ -1,8 +1,7 @@
 @page "/project/{ProjectName}"
 @namespace XTMF2.Web.Client.Pages
 <BasePage ShowSideNav="false">
-
-    <Content>
+<ChildContent>
         @if (IsLoaded)
         {
             <table class="table table-hover">
@@ -45,7 +44,7 @@
                 The project was not loaded or could not be found.
             </BSAlert>
         }
-    </Content>
+        </ChildContent>
     <Title>Project - @ProjectName</Title>
 </BasePage>
 

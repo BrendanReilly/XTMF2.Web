@@ -1,8 +1,5 @@
 ﻿
 @namespace XTMF2.Web.Client.Shared
-@using Microsoft.AspNetCore.Components.Authorization
-@using XTMF2.Web.Client.Services
-@using Microsoft.Extensions.Logging;
 @inherits LayoutComponentBase
 <div class="wrapper">
     <nav id="main-sidebar">
@@ -65,43 +62,6 @@
 </div>
 
 @code {
-        [CascadingParameter]
-        private Task<AuthenticationState> authenticationStateTask { get; set; }
-
-        private bool IsLoggedIn {get;set;}
-
-        [Inject] protected XtmfAuthenticationStateProvider AuthStateProvider {get;set;}
-
-        [Inject] protected  IJSRuntime JSRuntime { get;set;}
-
-        [Inject] protected AuthenticationService AuthenticationService {get;set;}
-
-        [Inject] protected ILogger<MainLayout> Logger {get;set;}
-
-        protected override async Task OnInitializedAsync() {
-            AuthStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
-            var result = await AuthenticationService.LoginAsync("local");
-            await authenticationStateTask; 
-        }
         
-        private async void OnAuthenticationStateChanged(Task<AuthenticationState> authStateTask) {
-            var result = await authStateTask;
-            IsLoggedIn = result.User.Identity.IsAuthenticated;
-            if(IsLoggedIn) {
-                Logger.LogInformation("Authenticated successfully.");
-            }
-            else {
-                Logger.LogInformation("Unable to authenticate.");
-            }
-            StateHasChanged();
-        }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender)
-            {
-                await JSRuntime.InvokeVoidAsync("afterRender");
-            }
-        }
 
     }

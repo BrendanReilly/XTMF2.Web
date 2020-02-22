@@ -17,12 +17,26 @@
 
 using XTMF2.Web.Data.Models;
 using Microsoft.AspNetCore.Components;
+using System.Collections.Generic;
+using System;
+using XTMF2.Web.Data.Models.Editing;
+
 namespace XTMF2.Web.Components
 {
     public partial class ModelSystemEditor : ComponentBase
     {
+        protected Dictionary<Guid, BasePart> ComponentMap { get; set; }
         [Microsoft.AspNetCore.Components.Parameter]
         public ModelSystemModel ModelSystem { get; set; }
 
+        private void InitComponent(Guid objectId, ViewObject viewObject) {
+            Boundary b = new Boundary();
+            ((BasePart)b).BoundsChanged += OnBoundsChanged;
+            ComponentMap[objectId] = b;
+        }
+
+        private void OnBoundsChanged(object sender, BoundsChangedEventArgs e) {
+
+        }
     }
 }

@@ -1,8 +1,6 @@
 
 @namespace XTMF2.Web.Client.Shared
 @using Microsoft.AspNetCore.Components.Authorization
-@using Blazored.SessionStorage
-
 
 <div class="card border-light mb-3">
     <div class="card-body">
@@ -15,8 +13,7 @@
                     <div class="row">
                     </div>
                     <CascadingValue Value=this>
-
-                            @Content
+                            @ChildContent
                     </CascadingValue>
                 </div>
             </div>
@@ -29,19 +26,6 @@
 
 @code {
 
-[CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    [Parameter]
-    public RenderFragment Content { get; set; }
-
-    [Parameter]
-    public RenderFragment NavContent { get; set; }
-
-    [Parameter]
-    public RenderFragment Title { get; set; }
-
-    [Parameter]
-    public bool ShowSideNav { get; set; }
 
 }

@@ -19,10 +19,8 @@ using XTMF2.Web.Data.Models;
 using Microsoft.AspNetCore.Components;
 namespace XTMF2.Web.Components
 {
-    public partial class Node : ComponentBase
+    public partial class Node : BasePart
     {
-        [Microsoft.AspNetCore.Components.Parameter]
-        public ModelSystemModel ModelSystem { get; set; }
 
     }
 }

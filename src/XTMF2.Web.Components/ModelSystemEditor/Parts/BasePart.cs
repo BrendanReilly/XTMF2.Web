@@ -18,18 +18,41 @@
 using XTMF2.Web.Data.Models;
 using Microsoft.AspNetCore.Components;
 using System;
+using XTMF2.Web.Data.Types;
 
 namespace XTMF2.Web.Components
 {
-    public interface BasePart
+    /// <summary>
+    /// 
+    /// </summary>
+    public abstract class BasePart : ComponentBase
     {
-        /// <summary>
-        /// Event called whenever the component is moved or resized.
-        /// </summary>
-        public event EventHandler<EventArgs> OnBoundsChanged;
-
         [Microsoft.AspNetCore.Components.Parameter]
         public ModelSystemModel ModelSystem { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public event BoundsChangedEventHandler BoundsChanged;
+
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class BoundsChangedEventArgs : EventArgs
+    {
+        public Rectangle OldBounds { get; }
+        public Rectangle NewBounds { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oldBounds"></param>
+        /// <param name="newBounds"></param>
+        /// <returns></returns>
+        public BoundsChangedEventArgs(Rectangle oldBounds, Rectangle newBounds) => (OldBounds,NewBounds) = (oldBounds,NewBounds);
+    }
+
+    public delegate void BoundsChangedEventHandler(object sender, BoundsChangedEventArgs e);
 }

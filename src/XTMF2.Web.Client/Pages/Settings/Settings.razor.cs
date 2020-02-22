@@ -15,7 +15,9 @@
 //    You should have received a copy of the GNU General Public License
 //    along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
+using Microsoft.AspNetCore.Components;
+
 namespace XTMF2.Web.Client.Pages {
 
-	public partial class Settings { }
+	public partial class Settings : ComponentBase { }
 }

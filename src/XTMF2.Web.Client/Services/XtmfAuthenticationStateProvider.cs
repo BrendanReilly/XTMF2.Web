@@ -1,3 +1,4 @@
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Blazored.SessionStorage;
@@ -12,10 +13,16 @@ namespace XTMF2.Web.Client.Services
     public class XtmfAuthenticationStateProvider : AuthenticationStateProvider
     {
         public static bool IsAuthenticated { get; set; }
-        private ISessionStorageService Storage { get; set; }
-        private bool _isLoggedIn;
-        public XtmfAuthenticationStateProvider(ISessionStorageService storage)
+        private AuthenticationService _authenticationService { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="authenticationService"></param>
+        public XtmfAuthenticationStateProvider(AuthenticationService authenticationService)
         {
+            _authenticationService = authenticationService;
+            authenticationService.Authenticated += OnAuthenticated;
         }
 
         /// <summary>
@@ -26,21 +33,16 @@ namespace XTMF2.Web.Client.Services
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var identity = new ClaimsIdentity(new[] {
-                new Claim (ClaimTypes.Name, string.Empty),
-                }, _isLoggedIn ? "local" : string.Empty)
+                new Claim (ClaimTypes.Name, _authenticationService.IsLoggedIn ? "local" : string.Empty),
+                }, "JwtBearer")
             {
-
             };
             var user = new ClaimsPrincipal(identity);
             return Task.FromResult(new AuthenticationState(user));
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="loggedIn"></param>
-        public void NotifyUpdate(bool loggedIn = false)
-        {   _isLoggedIn = loggedIn;
+        private void OnAuthenticated(object sender, AuthenticatedEventArgs eventArgs)
+        {
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
     }

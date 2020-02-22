@@ -21,11 +21,8 @@ using System;
 
 namespace XTMF2.Web.Components
 {
-    public partial class Boundary : ComponentBase,BasePart
+    public partial class Boundary : BasePart
     {
-        [Microsoft.AspNetCore.Components.Parameter]
-        public ModelSystemModel ModelSystem { get; set; }
-
-        public event EventHandler<EventArgs> OnBoundsChanged;
+        
     }
 }

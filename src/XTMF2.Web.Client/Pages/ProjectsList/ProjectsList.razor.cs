@@ -37,6 +37,9 @@ namespace XTMF2.Web.Client.Pages
     /// </summary>
     public partial class ProjectsList : ComponentBase
     {
+        [CascadingParameter]
+        private Task<AuthenticationState> authenticationStateTask { get; set; }
+
         /// <summary>
         ///     New project form validation model.
         /// </summary>
@@ -75,6 +78,7 @@ namespace XTMF2.Web.Client.Pages
         /// </summary>
         protected override async Task OnInitializedAsync()
         {
+            var result = await authenticationStateTask;
             Logger.Information("Projects List loading.");
             var projects = await ProjectClient.ListAsync();
             Projects.AddRange(projects);
