@@ -18,7 +18,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using XTMF2.Web.Client.Services.Api;
+using XTMF2.Web.Data.Models.Editing;
 using XTMF2.Web.Server.Session;
 
 namespace XTMF2.Web.Server.Mapping.Binders

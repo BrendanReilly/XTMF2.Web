@@ -19,7 +19,7 @@ using System;
 using System.Threading.Tasks;
 using Blazored.SessionStorage;
 using Microsoft.Extensions.Logging;
-using XTMF2.Web.Client.Services.Api;
+using XTMF2.Web.ApiClient;
 
 namespace XTMF2.Web.Client.Services
 {
@@ -50,7 +50,7 @@ namespace XTMF2.Web.Client.Services
 
         /// <summary>
         /// </summary>
-        public event EventHandler<AuthenticatedEventArgs> Authenticated;
+        public event AuthenticatedEventHandler Authenticated;
 
         /// <summary>
         ///     Tests the login state of the current stored user.
@@ -98,6 +98,13 @@ namespace XTMF2.Web.Client.Services
             await _client.LogoutAsync();
         }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="args"></param>
+    public delegate void AuthenticatedEventHandler( object sender, AuthenticatedEventArgs args);
 
     /// <summary>
     /// </summary>

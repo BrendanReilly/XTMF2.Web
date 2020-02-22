@@ -30,19 +30,28 @@ namespace XTMF2.Web.Client.Pages
         /// <summary>
         ///     Path parameter that specifies the project name.
         /// </summary>
-        [Microsoft.AspNetCore.Components.Parameter]
+        [Parameter]
         public string ProjectName { get; set; }
 
         /// <summary>
         ///     Path parameter that specifies the model system name.
         /// </summary>
-        [Microsoft.AspNetCore.Components.Parameter]
+        [Parameter]
         public string ModelSystemName { get; set; }
 
 
         [Inject]
         protected ILogger<ModelSystem> Logger { get; set; }
 
-        
+        protected ModelSystemModel Model { get; private set; }
+
+        protected override void OnInitialized()
+        {
+            Model = new ModelSystemModel()
+            {
+                Name = ModelSystemName
+            };
+        }
+
     }
 }

@@ -20,9 +20,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using XTMF2.Web.Client.Services;
-using XTMF2.Web.Client.Services.Api;
 using XTMF2.Web.Components.Util;
 using XTMF2.Web.Data.Models;
+using XTMF2.Web.ApiClient;
 
 namespace XTMF2.Web.Client.Pages
 {

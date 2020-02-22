@@ -19,9 +19,8 @@ using System;
 using System.Net.Http;
 using System.Text;
 using Blazored.SessionStorage;
-using XTMF2.Web.Client.Util;
 
-namespace XTMF2.Web.Client.Services.Api
+namespace XTMF2.Web.ApiClient
 {
     /// <summary>
     /// 
@@ -35,9 +34,8 @@ namespace XTMF2.Web.Client.Services.Api
         /// <param name="authStateProvider"></param>
         /// <param name="storageService"></param>
         /// <returns></returns>
-        public ProjectClient(System.Net.Http.HttpClient httpClient, XtmfAuthenticationStateProvider authStateProvider, ISessionStorageService storageService) : this(httpClient)
+        public ProjectClient(System.Net.Http.HttpClient httpClient, ISessionStorageService storageService) : this(httpClient)
         {
-            AuthStateProvider = authStateProvider;
             SessionStorageService = storageService;
         }
 

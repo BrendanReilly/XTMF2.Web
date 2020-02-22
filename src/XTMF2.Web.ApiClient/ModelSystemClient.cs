@@ -18,23 +18,24 @@
 using System;
 using System.Net.Http;
 using System.Text;
-using XTMF2.Web.Client.Util;
+using Blazored.SessionStorage;
 
-namespace XTMF2.Web.Client.Services.Api
+namespace XTMF2.Web.ApiClient
 {
     /// <summary>
     /// 
     /// </summary>
-    public partial class ModelSystemEditorClient : BaseClient
+    public partial class ModelSystemClient : BaseClient
     {
         /// <summary>
+        /// 
         /// </summary>
         /// <param name="httpClient"></param>
-        /// <param name="authorization"></param>
+        /// <param name="storageService"></param>
         /// <returns></returns>
-        public ModelSystemEditorClient(HttpClient httpClient, XtmfAuthenticationStateProvider authStateProvider) : this(httpClient)
+        public ModelSystemClient(HttpClient httpClient, ISessionStorageService storageService) : this(httpClient)
         {
-            AuthStateProvider = authStateProvider;
+            SessionStorageService = storageService;
         }
 
         /// <summary>

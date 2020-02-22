@@ -20,22 +20,34 @@ using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 using System;
 using XTMF2.Web.Data.Models.Editing;
+using XTMF2.Web.ApiClient;
 
 namespace XTMF2.Web.Components
 {
     public partial class ModelSystemEditor : ComponentBase
     {
         protected Dictionary<Guid, BasePart> ComponentMap { get; set; }
-        [Microsoft.AspNetCore.Components.Parameter]
+
+        [Parameter]
         public ModelSystemModel ModelSystem { get; set; }
 
-        private void InitComponent(Guid objectId, ViewObject viewObject) {
-            Boundary b = new Boundary();
-            ((BasePart)b).BoundsChanged += OnBoundsChanged;
-            ComponentMap[objectId] = b;
+        [Inject]
+        protected ModelSystemEditorClient EditorClient { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            Console.WriteLine(ModelSystem.Name);
         }
 
-        private void OnBoundsChanged(object sender, BoundsChangedEventArgs e) {
+        private void InitComponent(Guid objectId, ViewObject viewObject)
+        {
+            Boundary b = new Boundary();
+            ComponentMap[objectId] = b;
+            ComponentMap[objectId].BoundsChanged += OnBoundsChanged;
+        }
+
+        private void OnBoundsChanged(object sender, BoundsChangedEventArgs e)
+        {
 
         }
     }

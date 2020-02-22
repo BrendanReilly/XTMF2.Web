@@ -25,7 +25,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Debugging;
 using XTMF2.Web.Client.Services;
-using XTMF2.Web.Client.Services.Api;
+using XTMF2.Web.ApiClient;
 using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Http.Connections.Client;
 
@@ -57,14 +57,9 @@ namespace XTMF2.Web.Client
             services.AddScoped<AuthenticationClient>();
             services.AddScoped<XtmfAuthenticationStateProvider>();
             services.AddScoped<AuthenticationStateProvider, XtmfAuthenticationStateProvider>();
-            services.AddScoped<ProjectClient>(provider =>
-            {
-                return new ProjectClient(provider.GetService<System.Net.Http.HttpClient>(),
-                    (XtmfAuthenticationStateProvider)provider.GetService<AuthenticationStateProvider>(),
-                    (ISessionStorageService)provider.GetService<ISessionStorageService>());
-            });
-            services.AddScoped<ModelSystemClient>();
+            services.AddScoped<ProjectClient>();
             services.AddScoped<AuthenticationService>();
+            services.AddScoped<ModelSystemEditorClient>();
             services.AddSingleton<NotificationService>();
             services.AddLogging(builder => { builder.SetMinimumLevel(LogLevel.Trace); });
             services.AddBlazoredSessionStorage();

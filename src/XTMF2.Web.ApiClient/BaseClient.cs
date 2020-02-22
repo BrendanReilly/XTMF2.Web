@@ -21,16 +21,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components;
-using XTMF2.Web.Client.Services;
 
-namespace XTMF2.Web.Client.Util
+namespace XTMF2.Web.ApiClient
 {
     /// <summary>
     ///     Base API client with share logic for manipulating request header variables before being sent to the server.
     /// </summary>
     public class BaseClient
     {
-        protected XtmfAuthenticationStateProvider AuthStateProvider { get; set; }
         protected ISessionStorageService SessionStorageService { get; set; }
 
         /// <summary>

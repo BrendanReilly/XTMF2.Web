@@ -27,7 +27,7 @@ namespace XTMF2.Web.Components
     /// </summary>
     public abstract class BasePart : ComponentBase
     {
-        [Microsoft.AspNetCore.Components.Parameter]
+        [Parameter]
         public ModelSystemModel ModelSystem { get; set; }
 
         /// <summary>

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <GenerateFullPaths>True</GenerateFullPaths>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Blazored.SessionStorage" Version="1.0.11" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XTMF2.Web.Data\XTMF2.Web.Data.csproj" />
+  </ItemGroup>
+</Project>

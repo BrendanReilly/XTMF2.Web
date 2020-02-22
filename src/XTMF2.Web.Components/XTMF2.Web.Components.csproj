@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\XTMF2.Web.ApiClient\XTMF2.Web.ApiClient.csproj" />
     <ProjectReference Include="..\XTMF2.Web.Data\XTMF2.Web.Data.csproj" />
   </ItemGroup>
 

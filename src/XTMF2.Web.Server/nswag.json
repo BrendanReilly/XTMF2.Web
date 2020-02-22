@@ -86,8 +86,10 @@
       "operationGenerationMode": "MultipleClientsFromOperationId",
       "additionalNamespaceUsages": [
         "XTMF2.Web.Data.Models",
+        "XTMF2.Web.Data.Models.Editing",
+        "XTMF2.Web.Data.Types",
         "XTMF2.Web.Data.Interfaces",
-        "XTMF2.Web.Client.Util"
+        "XTMF2.Web.ApiClient"
       ],
       "additionalContractNamespaceUsages": [],
       "generateOptionalParameters": false,
@@ -101,7 +103,7 @@
       "wrapResponseMethods": [],
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
-      "namespace": "XTMF2.Web.Client.Services.Api",
+      "namespace": "XTMF2.Web.ApiClient",
       "requiredPropertiesMustBeDefined": true,
       "dateType": "System.DateTimeOffset",
       "jsonConverters": null,
@@ -120,7 +122,9 @@
       "generateDataAnnotations": true,
       "excludedTypeNames": [
         "ProjectModel",
-        "ModelSystemModel"
+        "ModelSystemModel",
+        "Rectangle",
+        "ViewObject"
       ],
       "excludedParameterNames": [],
       "handleReferences": false,
@@ -139,7 +143,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "../XTMF2.Web.Client/Services/Api/ApiClient.cs"
+      "output": "../XTMF2.Web.ApiClient/ApiClient.cs"
     }
   }
 }

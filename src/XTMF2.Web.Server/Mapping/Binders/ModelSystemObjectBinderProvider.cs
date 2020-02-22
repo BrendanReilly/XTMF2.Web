@@ -20,8 +20,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using XTMF2.ModelSystemConstruct;
-using XTMF2.Web.Client.Services.Api;
-using XTMF2.Web.Server.Session;
 
 namespace XTMF2.Web.Server.Mapping.Binders
 {

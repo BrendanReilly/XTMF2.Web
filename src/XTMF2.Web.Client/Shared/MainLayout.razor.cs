@@ -23,7 +23,7 @@ using BlazorStrap;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 using Microsoft.JSInterop;
-using XTMF2.Web.Client.Services.Api;
+using XTMF2.Web.ApiClient;
 using XTMF2.Web.Components.Util;
 using XTMF2.Web.Data.Models;
 using XTMF2.Web.Client.Services;

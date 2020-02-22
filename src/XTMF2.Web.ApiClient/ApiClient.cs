@@ -5,8 +5,10 @@
 //----------------------
 
 using XTMF2.Web.Data.Models;
+using XTMF2.Web.Data.Models.Editing;
+using XTMF2.Web.Data.Types;
 using XTMF2.Web.Data.Interfaces;
-using XTMF2.Web.Client.Util;
+using XTMF2.Web.ApiClient;
 
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
@@ -14,7 +16,7 @@ using XTMF2.Web.Client.Util;
 #pragma warning disable 1573 // Disable "CS1573 Parameter '...' has no matching param tag in the XML comment for ...
 #pragma warning disable 1591 // Disable "CS1591 Missing XML comment for publicly visible type or member ..."
 
-namespace XTMF2.Web.Client.Services.Api
+namespace XTMF2.Web.ApiClient
 {
     using System = global::System;
     
@@ -2522,41 +2524,6 @@ namespace XTMF2.Web.Client.Services.Api
     
         [Newtonsoft.Json.JsonProperty("Type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Type { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.4.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class ViewObject 
-    {
-        [Newtonsoft.Json.JsonProperty("Id", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid Id { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("Location", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public Rectangle Location { get; set; } = new Rectangle();
-    
-        [Newtonsoft.Json.JsonProperty("ObjectReference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object ObjectReference { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.4.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class Rectangle 
-    {
-        [Newtonsoft.Json.JsonProperty("X", Required = Newtonsoft.Json.Required.Always)]
-        public double X { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("Y", Required = Newtonsoft.Json.Required.Always)]
-        public double Y { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("Width", Required = Newtonsoft.Json.Required.Always)]
-        public double Width { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("Height", Required = Newtonsoft.Json.Required.Always)]
-        public double Height { get; set; }
     
     
     }

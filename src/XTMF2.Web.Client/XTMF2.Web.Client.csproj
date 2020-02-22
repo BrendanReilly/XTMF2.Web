@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
+    <GenerateFullPaths>True</GenerateFullPaths>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\XTMF2.Web.ApiClient\XTMF2.Web.ApiClient.csproj" />
     <ProjectReference Include="..\XTMF2.Web.Data\XTMF2.Web.Data.csproj" />
     <ProjectReference Include="..\XTMF2.Web.Components\XTMF2.Web.Components.csproj" />
   </ItemGroup>
