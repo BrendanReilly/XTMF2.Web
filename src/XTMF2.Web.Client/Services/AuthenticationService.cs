@@ -16,41 +16,27 @@
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Blazored.SessionStorage;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
 using XTMF2.Web.Client.Services.Api;
 
 namespace XTMF2.Web.Client.Services
 {
-
     public class AuthenticationService
     {
-        private AuthenticationClient _client;
-        private ISessionStorageService _storage;
-        private ILogger<AuthenticationService> _logger;
+        private readonly AuthenticationClient _client;
+        private readonly ILogger<AuthenticationService> _logger;
+        private readonly ISessionStorageService _storage;
 
         /// <summary>
-        /// 
-        /// </summary>
-        public event EventHandler<AuthenticatedEventArgs> Authenticated;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <value></value>
-        public bool IsLoggedIn { get; private set; }
-
-        /// <summary>
-        /// 
         /// </summary>
         /// <param name="client"></param>
         /// <param name="storage"></param>
         /// <param name="logger"></param>
         /// <param name="authProvider"></param>
-        public AuthenticationService(AuthenticationClient client, ISessionStorageService storage, ILogger<AuthenticationService> logger)
+        public AuthenticationService(AuthenticationClient client, ISessionStorageService storage,
+            ILogger<AuthenticationService> logger)
         {
             _client = client;
             _storage = storage;
@@ -58,16 +44,26 @@ namespace XTMF2.Web.Client.Services
         }
 
         /// <summary>
-        /// Tests the login state of the current stored user.
+        /// </summary>
+        /// <value></value>
+        public bool IsLoggedIn { get; private set; }
+
+        /// <summary>
+        /// </summary>
+        public event EventHandler<AuthenticatedEventArgs> Authenticated;
+
+        /// <summary>
+        ///     Tests the login state of the current stored user.
         /// </summary>
         /// <returns></returns>
         public async Task<bool> TestLoginAsync()
         {
-            return await _client.TestLoginAsync(await _storage.GetItemAsync<string>("uerName"), await _storage.GetItemAsync<string>("token"));
+            return await _client.TestLoginAsync(await _storage.GetItemAsync<string>("uerName"),
+                await _storage.GetItemAsync<string>("token"));
         }
 
         /// <summary>
-        /// Performs a login action. If successful, the access token is stored in browser session data.
+        ///     Performs a login action. If successful, the access token is stored in browser session data.
         /// </summary>
         /// <param name="userName">The username to login with.</param>
         /// <returns>True/false depending on login result.</returns>
@@ -86,37 +82,38 @@ namespace XTMF2.Web.Client.Services
                 _logger.LogError("Invalid login.", exception);
                 return false;
             }
-            Thread.Sleep(10000);
+
             IsLoggedIn = true;
             _logger.LogInformation("Logged in.");
-            Authenticated?.Invoke(this, new AuthenticatedEventArgs(userName,result));
+            Authenticated?.Invoke(this, new AuthenticatedEventArgs(userName, result));
             return true;
         }
 
         /// <summary>
-        /// Performs a logout action.
+        ///     Performs a logout action.
         /// </summary>
         /// <returns></returns>
         public async void LogoutAsync()
         {
             await _client.LogoutAsync();
         }
-
     }
 
     /// <summary>
-    /// 
     /// </summary>
     public class AuthenticatedEventArgs : EventArgs
     {
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public AuthenticatedEventArgs(string userName, string token) => (UserName,Token) = (userName,token);
-        public string UserName { get; private set; }
-        public string Token { get; private set; }
+        public AuthenticatedEventArgs(string userName, string token)
+        {
+            (UserName, Token) = (userName, token);
+        }
+
+        public string UserName { get; }
+        public string Token { get; }
     }
 }

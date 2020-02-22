@@ -71,6 +71,8 @@ namespace XTMF2.Web.Client.Shared
                IsLoggedIn = result.User.Identity.IsAuthenticated;
                if (IsLoggedIn)
                {
+                   // hide the overlay on successful login
+                   JSRuntime.InvokeVoidAsync("xtmf2.hideOverlay");
                    Logger.LogInformation("Authenticated successfully.");
                }
                else

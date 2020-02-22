@@ -15,7 +15,6 @@
 //    You should have received a copy of the GNU General Public License
 //    along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
@@ -33,26 +32,26 @@ namespace XTMF2.Web.Client.Pages
     public partial class ProjectDisplay : ComponentBase
     {
         private InputRequestDialog _inputDialog = null;
+
         /// <summary>
         ///     Path parameter that specifies the ProjectName
         /// </summary>
-        [Microsoft.AspNetCore.Components.Parameter]
+        [Parameter]
         public string ProjectName { get; set; }
 
-        [Inject]
-        protected ILogger<ProjectDisplay> Logger { get; set; }
+        [Inject] protected ILogger<ProjectDisplay> Logger { get; set; }
 
         /// <summary>
         ///     Model systems belonging to the project
         /// </summary>
-        public List<ModelSystemModel> ModelSystems { get; private set; } = new List<ModelSystemModel>();
+        public List<ModelSystemModel> ModelSystems { get; } = new List<ModelSystemModel>();
 
         /// <summary>
         ///     The loaded project.
         /// </summary>
         protected ProjectModel Project { get; set; }
 
-        protected bool IsLoaded { get; set; } = false;
+        protected bool IsLoaded { get; set; }
 
         [Inject] protected ProjectClient ProjectClient { get; set; }
 
@@ -62,15 +61,23 @@ namespace XTMF2.Web.Client.Pages
 
         protected async void NewModelSystemSubmit(string input)
         {
-            var modelSystem = new ModelSystemModel()
+            var modelSystem = new ModelSystemModel
             {
                 Name = input
             };
-            var model = await ModelSystemClient.CreateAsync(ProjectName, modelSystem);
-            Logger.LogInformation("Created");
-            NotificationService.SuccessMessage($"Model system created: {modelSystem.Name}");
-            ModelSystems.Add(modelSystem);
-            this.StateHasChanged();
+            try
+            {
+                var model = await ModelSystemClient.CreateAsync(ProjectName, modelSystem);
+                Logger.LogInformation("Created");
+                NotificationService.SuccessMessage($"Model system created: {modelSystem.Name}");
+                ModelSystems.Add(modelSystem);
+                StateHasChanged();
+            }
+            catch (ApiException e)
+            {
+                Logger.LogError(e, e.Message);
+                NotificationService.ErrorMessage($"Unable to create model system. {e.Message}");
+            }
         }
 
         protected void NewModelSystemClicked()
@@ -90,11 +97,12 @@ namespace XTMF2.Web.Client.Pages
                 ModelSystems.Remove(modelSystem);
                 Logger.LogInformation($"Model system deleted: {modelSystem.Name}");
                 NotificationService.ErrorMessage($"Model system deleted: {modelSystem.Name}");
-                this.StateHasChanged();
+                StateHasChanged();
             }
             catch (ApiException e)
             {
-                Logger.LogError(e, $"Unable to delete model sytem {modelSystem.Name}");
+                NotificationService.ErrorMessage($"{e.Message}");
+                Logger.LogError(e, $"Unable to delete model system {modelSystem.Name}");
             }
         }
 

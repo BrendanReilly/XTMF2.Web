@@ -14,5 +14,13 @@
         "options": {
             "sourceMap": true
         }
+    },
+    {
+        "outputFile": "wwwroot/css/styles.css",
+        "inputFile": "Shared/Styles.scss",
+        "includeInProject": true,
+        "options": {
+            "sourceMap": true
+        }
     }
 ]

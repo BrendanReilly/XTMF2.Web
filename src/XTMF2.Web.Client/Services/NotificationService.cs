@@ -16,21 +16,22 @@
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
 using Microsoft.JSInterop;
+
 namespace XTMF2.Web.Client.Services
 {
     /// <summary>
-    /// Manages displaying various types of notifications (global)
+    ///     Manages displaying various types of notifications (global)
     /// </summary>
     public class NotificationService
     {
-        private IJSRuntime _runtime;
+        private readonly IJSRuntime _runtime;
+
         public NotificationService(IJSRuntime runtime)
         {
             _runtime = runtime;
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
@@ -40,20 +41,20 @@ namespace XTMF2.Web.Client.Services
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        public async void ErrorMessage(string message) {
+        public async void ErrorMessage(string message)
+        {
             await _runtime.InvokeAsync<string>("xtmfNotificationService.errorMessage", message);
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        public async void WarningMessage(string message) {
+        public async void WarningMessage(string message)
+        {
             await _runtime.InvokeAsync<string>("xtmfNotificationService.warningMessage", message);
         }
     }

@@ -4,3 +4,9 @@ window.afterRender = () => {
         $('#main-sidebar').toggleClass('active');
     });
 }
+
+window.xtmf2 = {
+    hideOverlay: () => {
+        $('#opaque').css('display','none');
+    }
+}

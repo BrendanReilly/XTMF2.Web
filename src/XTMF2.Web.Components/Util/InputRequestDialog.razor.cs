@@ -56,6 +56,7 @@ namespace XTMF2.Web.Components.Util
         {
             OnSubmit.InvokeAsync(InputModel.Value);
             _inputModal.Hide();
+            InputModel = new InputModel();
         }
 
         /// <summary>
