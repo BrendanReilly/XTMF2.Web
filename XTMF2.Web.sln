@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XTMF2.Web.Client", "src\XTM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XTMF2.Web.Server", "src\XTMF2.Web.Server\XTMF2.Web.Server.csproj", "{E64F2DDF-55A0-49CA-BCBF-1DDB6A47795C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XTMF2.Web.ApiClient", "src\XTMF2.Web.ApiClient\XTMF2.Web.ApiClient.csproj", "{E8520ADF-E085-46C9-AE2B-24DC4DC2FEE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XTMF2.Web.ApiClient", "src\XTMF2.Web.ApiClient\XTMF2.Web.ApiClient.csproj", "{E8520ADF-E085-46C9-AE2B-24DC4DC2FEE4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
