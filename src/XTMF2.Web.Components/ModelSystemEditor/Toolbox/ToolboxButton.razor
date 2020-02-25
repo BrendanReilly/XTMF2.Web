@@ -1,0 +1,20 @@
+﻿@namespace XTMF2.Web.Components.Toolbox
+
+<button @onclick="OnClicked"></button>
+
+@code {
+
+    [Parameter]
+    public string ButtonText { get; set; }
+
+    public event EventHandler<EventArgs> Clicked;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    protected virtual void OnClicked()
+    {
+        Clicked?.Invoke(this, EventArgs.Empty);
+    }
+
+}
