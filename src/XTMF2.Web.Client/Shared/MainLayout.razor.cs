@@ -21,7 +21,6 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using BlazorStrap;
 using Microsoft.AspNetCore.Components;
-using Serilog;
 using Microsoft.JSInterop;
 using XTMF2.Web.ApiClient;
 using XTMF2.Web.Components.Util;

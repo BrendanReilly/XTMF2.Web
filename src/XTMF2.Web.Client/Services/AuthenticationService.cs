@@ -36,7 +36,7 @@ namespace XTMF2.Web.Client.Services
         /// <param name="storage"></param>
         /// <param name="logger"></param>
         public AuthenticationService(AuthenticationClient client, ISessionStorageService storage,
-            ILogger<AuthenticationService> logger, Serilog.ILogger logger2)
+            ILogger<AuthenticationService> logger)
         {
             _client = client;
             _storage = storage;
@@ -85,7 +85,6 @@ namespace XTMF2.Web.Client.Services
 
             IsLoggedIn = true;
             _logger.LogInformation("Logged in.");
-            Serilog.Log.ForContext<AuthenticationService>().Information("Logged in.");
             Authenticated?.Invoke(this, new AuthenticatedEventArgs(userName, result));
             return true;
         }

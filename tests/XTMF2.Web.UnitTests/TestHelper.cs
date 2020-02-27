@@ -1,4 +1,4 @@
-﻿﻿//     Copyright 2017-2020 University of Toronto
+﻿//     Copyright 2017-2020 University of Toronto
 // 
 //     This file is part of XTMF2.
 // 
@@ -26,6 +26,11 @@ namespace XTMF2.Web.UnitTests
         public static XTMFRuntime Runtime;
         public static UserController UserController;
         public static ProjectController ProjectController;
+
+        static TestHelper()
+        {
+            Runtime = XTMFRuntime.CreateRuntime();
+        }
 
         /// <summary>
         /// </summary>
@@ -55,14 +60,16 @@ namespace XTMF2.Web.UnitTests
         /// <param name="projectName"></param>
         /// <param name="modelSystemName"></param>
         /// <param name="modelSystemSession"></param>
-        public static ModelSystemSession InitializeTestModelSystem(User user, string projectName, string modelSystemName,
+        public static ModelSystemSession InitializeTestModelSystem(User user, string projectName,
+            string modelSystemName,
             out ModelSystemSession modelSystemSession)
         {
             ProjectController.CreateNewProject(user, projectName, out var projectSession, out var error);
             projectSession.CreateNewModelSystem(user, modelSystemName, out var modelSystem, out error);
             projectSession.EditModelSystem(user, modelSystem, out modelSystemSession, out error);
 
-            modelSystemSession.AddModelSystemStart(user, modelSystemSession.ModelSystem.GlobalBoundary, "TestStart", new Rectangle(10, 10, 100, 100),
+            modelSystemSession.AddModelSystemStart(user, modelSystemSession.ModelSystem.GlobalBoundary, "TestStart",
+                new Rectangle(10, 10, 100, 100),
                 out var start, out error);
             modelSystemSession.AddNode(user, modelSystemSession.ModelSystem.GlobalBoundary, "TestNode1",
                 typeof(SimpleTestModule), new Rectangle(10, 10, 100, 100), out var node, out error);
@@ -72,11 +79,6 @@ namespace XTMF2.Web.UnitTests
             modelSystemSession.AddNode(user, boundary, "TestNode2",
                 typeof(SimpleTestModule), new Rectangle(10, 10, 100, 100), out var testNode2, out error);
             return modelSystemSession;
-        }
-
-        static TestHelper()
-        {
-            Runtime = XTMFRuntime.CreateRuntime();
         }
     }
 }

@@ -27,55 +27,7 @@ namespace XTMF2.Web.Server.Utils
 {
     public class ModelSystemUtils
     {
-        /// <summary>
-        /// </summary>
-        /// <param name="o"></param>
-        /// <returns></returns>
-        public static IEnumerable<ViewObject> Traverse(ViewObject o)
-        {
-            return ModelSystemObjectsTraverse(o);
-        }
 
-        /// <summary>
-        ///     Iterate over all model system objects
-        /// </summary>
-        /// <param name="modelSystem"></param>
-        /// <returns></returns>
-        public static IEnumerable<ViewObject> ModelSystemObjects(ModelSystemEditingModel modelSystem)
-        {
-            return ModelSystemObjectsTraverse(modelSystem.GlobalBoundary);
-        }
-
-        private static IEnumerable<ViewObject> ModelSystemObjectsTraverse(ViewObject viewObject)
-        {
-            yield return viewObject;
-            if (viewObject is BoundaryModel boundary)
-            {
-                foreach (var c in boundary.CommentBlocks)
-                {
-                    yield return c;
-                }
-
-                foreach (var s in boundary.Starts)
-                {
-                    yield return s;
-                }
-
-                foreach (var n in boundary.Modules)
-                {
-                    yield return n;
-                }
-
-                foreach (var b in boundary.Boundaries)
-                {
-                    foreach (var boundaryChild in ModelSystemObjectsTraverse(b))
-                    {
-                        yield return boundaryChild;
-                    }
-                }
-            }
-
-        }
 
         /// <summary>
         ///     Returns the model system object addressed by the passed path.

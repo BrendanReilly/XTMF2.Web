@@ -1,0 +1,13 @@
+﻿@namespace XTMF2.Web.Components.ModelSystemEditor
+@using XTMF2.Web.Data.Models.Editing
+
+@inherits ViewObjectPart<XTMF2.Web.Data.Models.Editing.CommentBlockModel>
+<ModelSystemObject Model="Model" T="CommentBlockModel">
+    <div>
+        @Model.Comment
+    </div>
+</ModelSystemObject>
+
+@code {
+
+}

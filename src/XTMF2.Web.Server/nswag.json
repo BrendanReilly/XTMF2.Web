@@ -123,6 +123,11 @@
       "excludedTypeNames": [
         "ProjectModel",
         "ModelSystemModel",
+        "ModelSystemEditingModel",
+        "BoundaryModel",
+        "NodeModel",
+        "CommentBlockModel",
+        "StartModel",
         "Rectangle",
         "ViewObject"
       ],

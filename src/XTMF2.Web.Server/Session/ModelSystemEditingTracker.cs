@@ -23,6 +23,8 @@ using AutoMapper;
 using XTMF2.Editing;
 using XTMF2.Web.Data.Models.Editing;
 using XTMF2.Web.Server.Utils;
+using XTMF2.Web.Shared;
+using XTMF2.Web.Shared.Util;
 
 namespace XTMF2.Web.Server.Session
 {
@@ -162,11 +164,10 @@ namespace XTMF2.Web.Server.Session
         /// <summary>
         ///     Stores all objects in the object/view/edit model reference maps
         /// </summary>
-        /// <param name="session"></param>
         /// <param name="editingModel"></param>
         private void StoreModelSystemObjectReferenceMap(ModelSystemEditingModel editingModel)
         {
-            foreach (var viewObject in ModelSystemUtils.ModelSystemObjects(editingModel))
+            foreach (var viewObject in EditingUtil.ModelSystemObjects(editingModel))
             {
                 ModelSystemEditingObjectReferenceMap[viewObject.Id] = viewObject;
                 ModelSystemObjectReferenceMap[viewObject.ObjectReference] = viewObject;
@@ -218,9 +219,9 @@ namespace XTMF2.Web.Server.Session
                         nodeModel.ContainedWithin = (BoundaryModel)ModelSystemObjectReferenceMap[node];
                         nodeModel.ContainedWithinId = ModelSystemObjectReferenceMap[node].Id;
                     }
-
+                    
                     // traverse also returns the passed item for convenience
-                    foreach (var e in ModelSystemUtils.Traverse(editingObject))
+                    foreach (var e in EditingUtil.Traverse(editingObject))
                     {
                         ModelSystemEditingObjectReferenceMap[e.Id] = e;
                         ModelSystemObjectReferenceMap[e.ObjectReference] = e;
@@ -231,7 +232,7 @@ namespace XTMF2.Web.Server.Session
                 {
                     var editingObject = (ViewObject)_mapper.Map(item, item.GetType(),
                         ModelSystemUtils.GetModelSystemEditingType(item));
-                    foreach (var e in ModelSystemUtils.Traverse(editingObject))
+                    foreach (var e in EditingUtil.Traverse(editingObject))
                     {
                         ModelSystemEditingObjectReferenceMap.Remove(e.Id);
                         ModelSystemObjectReferenceMap.Remove(e.ObjectReference);

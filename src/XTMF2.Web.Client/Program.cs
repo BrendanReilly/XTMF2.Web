@@ -22,8 +22,6 @@ using Microsoft.AspNetCore.Blazor.Hosting;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Serilog;
-using Serilog.Debugging;
 using XTMF2.Web.Client.Services;
 using XTMF2.Web.ApiClient;
 using Blazored.SessionStorage;
@@ -59,11 +57,10 @@ namespace XTMF2.Web.Client
             services.AddScoped<AuthenticationStateProvider, XtmfAuthenticationStateProvider>();
             services.AddScoped<ProjectClient>();
             services.AddScoped<AuthenticationService>();
+            services.AddScoped<ModelSystemClient>();
             services.AddScoped<ModelSystemEditorClient>();
             services.AddSingleton<NotificationService>();
-            services.AddLogging(builder => { 
-                builder.AddSerilog(dispose: true);
-            });
+            services.AddLogging();
             services.AddBlazoredSessionStorage();
             services.AddAuthorizationCore();
         }
@@ -73,12 +70,7 @@ namespace XTMF2.Web.Client
         /// </summary>
         private static void ConfigureLogger()
         {
-            SelfLog.Enable(m => Console.Error.WriteLine(m));
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .Enrich.FromLogContext()
-                .WriteTo.BrowserConsole()
-                .CreateLogger();
+           
         }
 
         /// <summary>

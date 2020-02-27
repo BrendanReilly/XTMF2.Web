@@ -1,2 +1,24 @@
-@namespace XTMF2.Web.Components
-@inherits BasePart
+@namespace XTMF2.Web.Components.ModelSystemEditor
+@using XTMF2.Web.Data.Models.Editing
+@inherits ViewObjectPart<XTMF2.Web.Data.Models.Editing.BoundaryModel>
+
+<ModelSystemObject Model="Model" T="BoundaryModel">
+    @* Display all comment blocks in this boundary *@
+    @foreach (var commentBlock in Model.CommentBlocks)
+    {
+        <CommentBlock Model="commentBlock"></CommentBlock>
+    }
+
+    @* Display all starts in this boundary  *@
+    @foreach (var start in Model.Starts)
+    {
+        <Start Model="start"></Start>
+    }
+
+    @* Display all sub-boundaries and their child components *@
+    @foreach (var boundary in Model.Boundaries)
+    {
+        <Boundary Model="boundary"></Boundary>
+    }
+
+</ModelSystemObject>

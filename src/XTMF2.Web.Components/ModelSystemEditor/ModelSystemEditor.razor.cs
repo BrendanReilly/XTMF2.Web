@@ -19,15 +19,18 @@ using XTMF2.Web.Data.Models;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 using System;
+using Microsoft.Extensions.Logging;
 using XTMF2.Web.Data.Models.Editing;
 using XTMF2.Web.ApiClient;
-using BoundaryModel = XTMF2.Web.Data.Models.Editing.BoundaryModel;
+using XTMF2.Web.Shared.Util;
 
-namespace XTMF2.Web.Components
+namespace XTMF2.Web.Components.ModelSystemEditor
 {
     public partial class ModelSystemEditor : ComponentBase
     {
-        protected Dictionary<Guid, BasePart> ComponentMap { get; set; }
+        protected Dictionary<Guid, ViewObject> ViewObjectMap { get; set; } = new Dictionary<Guid, ViewObject>();
+
+        protected Dictionary<Guid, BasePart> ComponentMap { get; set; } = new Dictionary<Guid, BasePart>();
 
         [Parameter]
         public ModelSystemModel ModelSystemInfo { get; set; }
@@ -38,26 +41,35 @@ namespace XTMF2.Web.Components
         [Inject]
         protected ModelSystemEditorClient EditorClient { get; set; }
 
+        [Inject]
+        protected ILogger<ModelSystemEditor> Logger { get; set; }
+
         protected override void OnParametersSet()
         {
-            Console.WriteLine(ModelSystemInfo.Name);
+            Logger.LogInformation(ModelSystemInfo.Name);
         }
 
         private void UpdateComponentMap()
         {
-
-        }
-
-        private void InitComponent(Guid objectId, ViewObject viewObject)
-        {
-            Boundary b = new Boundary();
-            ComponentMap[objectId] = b;
-            ComponentMap[objectId].BoundsChanged += OnBoundsChanged;
+            foreach (var viewObject in EditingUtil.ModelSystemObjects(Model))
+            {
+                ViewObjectMap[viewObject.Id] = viewObject;
+            }
         }
 
         private void OnBoundsChanged(object sender, BoundsChangedEventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// Register the component with the editor, maps the view object id to the actual rendered component
+        /// </summary>
+        /// <param name="component"></param>
+        public void RegisterComponent(BasePart component)
+        {
+            ComponentMap[component.Model.Id] = component;
+            Logger.LogInformation($"registered component {component}, {component.Model.Id}");
         }
     }
 }

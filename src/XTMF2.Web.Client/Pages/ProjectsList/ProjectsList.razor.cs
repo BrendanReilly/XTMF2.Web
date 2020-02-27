@@ -21,13 +21,13 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using BlazorStrap;
 using Microsoft.AspNetCore.Components;
-using Serilog;
 using Microsoft.JSInterop;
 using XTMF2.Web.ApiClient;
 using XTMF2.Web.Components.Util;
 using XTMF2.Web.Data.Models;
 using XTMF2.Web.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace XTMF2.Web.Client.Pages
 {
@@ -54,7 +54,7 @@ namespace XTMF2.Web.Client.Pages
 
         [Inject] protected ProjectClient ProjectClient { get; set; }
 
-        protected ILogger Logger { get; } = Log.ForContext<ProjectsList>();
+        [Inject] protected ILogger<ProjectsList> Logger { get; set; }
 
         [Inject] private NavigationManager NavigationManager { get; set; }
 
@@ -79,7 +79,7 @@ namespace XTMF2.Web.Client.Pages
         protected override async Task OnInitializedAsync()
         {
             var result = await authenticationStateTask;
-            Logger.Information("Projects List loading.");
+            Logger.LogInformation("Projects List loading.");
             var projects = await ProjectClient.ListAsync();
             Projects.AddRange(projects);
             IsLoaded = true;
@@ -92,7 +92,7 @@ namespace XTMF2.Web.Client.Pages
         {
             await ProjectClient.DeleteAsync(project.Name);
             Projects.Remove(project);
-            Logger.Information($"Project {project.Name} has been deleted.");
+            Logger.LogInformation($"Project {project.Name} has been deleted.");
             NotificationService.ErrorMessage($"Project {project.Name} deleted.");
             this.StateHasChanged();
         }
@@ -104,7 +104,7 @@ namespace XTMF2.Web.Client.Pages
         {
             var model = await ProjectClient.CreateAsync(input);
             Projects.Add(model);
-            Logger.Information($"Project {input} has been created.");
+            Logger.LogInformation($"Project {input} has been created.");
             NotificationService.SuccessMessage($"Project {input} Created.");
             this.StateHasChanged();
 

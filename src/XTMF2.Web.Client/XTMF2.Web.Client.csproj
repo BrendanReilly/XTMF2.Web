@@ -18,9 +18,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Serilog" Version="2.9.0" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
-    <PackageReference Include="Serilog.Sinks.BrowserConsole" Version="1.0.0-dev-00012" />
     <PackageReference Include="BuildWebCompiler" Version="1.12.405" />
 
   </ItemGroup>
@@ -29,6 +26,7 @@
     <ProjectReference Include="..\XTMF2.Web.ApiClient\XTMF2.Web.ApiClient.csproj" />
     <ProjectReference Include="..\XTMF2.Web.Data\XTMF2.Web.Data.csproj" />
     <ProjectReference Include="..\XTMF2.Web.Components\XTMF2.Web.Components.csproj" />
+    <ProjectReference Include="..\XTMF2.Web.Shared\XTMF2.Web.Shared.csproj" />
   </ItemGroup>
 
 </Project>

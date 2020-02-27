@@ -106,7 +106,7 @@ namespace XTMF2.Web.Server.Controllers
         /// <param name="userSession"></param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ModelSystemEditingModel),StatusCodes.Status200OK)]
         [HttpGet("projects/{projectName}/model-systems/{modelSystemName}/")]
         public IActionResult GetModelSystem(string projectName, string modelSystemName, [FromServices] UserSession userSession)
         {

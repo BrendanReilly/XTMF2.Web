@@ -1,8 +1,15 @@
 @page "/model-system/{ProjectName}/{ModelSystemName}"
 @namespace XTMF2.Web.Client.Pages
-@using XTMF2.Web.Components
+@using XTMF2.Web.Components.ModelSystemEditor
 <BasePage ShowSideNav="false">
-        <ModelSystemEditor ModelSystem="Model"/>
+    @if (IsLoaded)
+    {
+        <ModelSystemEditor ModelSystemInfo="ModelSystemInfo" Model="Model"/>
+    }
+    else
+    {
+        <span>Loading...</span>
+    }
 </BasePage>
 
 @code {

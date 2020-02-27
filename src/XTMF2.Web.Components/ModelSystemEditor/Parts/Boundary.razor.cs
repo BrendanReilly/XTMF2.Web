@@ -18,11 +18,16 @@
 using XTMF2.Web.Data.Models;
 using Microsoft.AspNetCore.Components;
 using System;
+using XTMF2.Web.Data.Models.Editing;
 
-namespace XTMF2.Web.Components
+namespace XTMF2.Web.Components.ModelSystemEditor
 {
-    public partial class Boundary : BasePart
+    public partial class Boundary : ViewObjectPart<BoundaryModel>
     {
-        
+        protected override void OnInitialized()
+        {
+            Console.WriteLine("In boundary override init.");
+            base.OnInitialized();
+        }
     }
 }
