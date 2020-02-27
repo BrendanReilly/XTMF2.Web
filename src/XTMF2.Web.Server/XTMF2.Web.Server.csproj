@@ -19,6 +19,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Server" Version="3.2.0-preview1.20073.1" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.2.3" />
     <PackageReference Include="NSwag.MSBuild" Version="13.2.2" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
   </ItemGroup>
 
   <!-- target for building swagger.json based on controller definitions -->
@@ -32,6 +34,9 @@
     <ProjectReference Include="..\XTMF2\src\XTMF2\XTMF2.csproj" />
     <ProjectReference Include="..\XTMF2\src\XTMF2.Interfaces\XTMF2.Interfaces.csproj" />
     <ProjectReference Include="..\XTMF2\src\XTMF2.Client\XTMF2.Client.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Logs\" />
   </ItemGroup>
 
 </Project>

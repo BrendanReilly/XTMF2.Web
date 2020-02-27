@@ -35,6 +35,7 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using NSwag.Generation.Processors.Security;
+using Serilog;
 using XTMF2.Web.Server.Authorization;
 using XTMF2.Web.Server.Controllers;
 using XTMF2.Web.Server.Hubs;
@@ -191,7 +192,7 @@ namespace XTMF2.Web.Server
             app.UseBlazorDebugging();
             app.UseOpenApi();
             app.UseSwaggerUi3();
-
+            app.UseSerilogRequestLogging();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
