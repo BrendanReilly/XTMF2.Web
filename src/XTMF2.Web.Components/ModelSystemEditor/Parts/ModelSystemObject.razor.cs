@@ -15,10 +15,8 @@
 //     You should have received a copy of the GNU General Public License
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using Microsoft.AspNetCore.Components;
 using XTMF2.Web.Data.Models.Editing;
-using XTMF2.Web.Data.Types;
 
 namespace XTMF2.Web.Components.ModelSystemEditor
 {
@@ -27,9 +25,5 @@ namespace XTMF2.Web.Components.ModelSystemEditor
         [Parameter] public RenderFragment ChildContent { get; set; }
 
         [Parameter] public ViewObject Model { get; set; }
-
-        
     }
-
-
 }

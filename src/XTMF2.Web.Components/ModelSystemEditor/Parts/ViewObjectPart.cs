@@ -34,23 +34,17 @@ namespace XTMF2.Web.Components.ModelSystemEditor
             set => _model = value;
         }
 
-        [Parameter] public EventCallback<BoundsChangedEventArgs> OnBoundsChanged { get; set; }
 
         protected override void OnInitialized()
         {
             Console.WriteLine("Editor: " + Editor);
             Editor.RegisterComponent(this);
         }
-
-        private async void ObjectBoundsChanged()
-        {
-            await OnBoundsChanged.InvokeAsync(new BoundsChangedEventArgs(Model.Location, Model.Location));
-        }
     }
 
     /// <summary>
     /// </summary>
-    public abstract class BasePart : ComponentBase
+    public abstract class BasePart : ComponentBase, IDisposable
     {
         protected ViewObject _model;
         [Parameter] public ModelSystemModel ModelSystemInfo { get; set; }
@@ -62,6 +56,18 @@ namespace XTMF2.Web.Components.ModelSystemEditor
         }
 
         [CascadingParameter] public ModelSystemEditor Editor { get; set; }
+
+        public event EventHandler<BoundsChangedEventArgs> BoundsChanged;
+
+        public void Dispose()
+        {
+            Editor.UnRegisterComponent(this);
+        }
+
+        private void ObjectBoundsChanged()
+        {
+            BoundsChanged?.Invoke(this, new BoundsChangedEventArgs(Model.Location, Model.Location));
+        }
     }
 
     /// <summary>

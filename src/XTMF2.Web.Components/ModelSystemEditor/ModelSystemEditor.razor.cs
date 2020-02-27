@@ -47,16 +47,23 @@ namespace XTMF2.Web.Components.ModelSystemEditor
         protected override void OnParametersSet()
         {
             Logger.LogInformation(ModelSystemInfo.Name);
+            UpdateComponentMap();
         }
 
         private void UpdateComponentMap()
         {
+            // store all view object (model) references in map
             foreach (var viewObject in EditingUtil.ModelSystemObjects(Model))
             {
                 ViewObjectMap[viewObject.Id] = viewObject;
             }
         }
 
+        /// <summary>
+        /// Called when any of the child model system objects' bounds changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnBoundsChanged(object sender, BoundsChangedEventArgs e)
         {
 
@@ -70,6 +77,17 @@ namespace XTMF2.Web.Components.ModelSystemEditor
         {
             ComponentMap[component.Model.Id] = component;
             Logger.LogInformation($"registered component {component}, {component.Model.Id}");
+            component.BoundsChanged += OnBoundsChanged;
+        }
+
+        /// <summary>
+        /// Un-registers the component from the component map
+        /// </summary>
+        /// <param name="component"></param>
+        public void UnRegisterComponent(BasePart component)
+        {
+            component.BoundsChanged -= OnBoundsChanged;
+            ComponentMap.Remove(component.Model.Id);
         }
     }
 }
