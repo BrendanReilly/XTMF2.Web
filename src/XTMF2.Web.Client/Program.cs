@@ -61,7 +61,9 @@ namespace XTMF2.Web.Client
             services.AddScoped<AuthenticationService>();
             services.AddScoped<ModelSystemEditorClient>();
             services.AddSingleton<NotificationService>();
-            services.AddLogging(builder => { builder.SetMinimumLevel(LogLevel.Trace); });
+            services.AddLogging(builder => { 
+                builder.AddSerilog(dispose: true);
+            });
             services.AddBlazoredSessionStorage();
             services.AddAuthorizationCore();
         }
@@ -74,6 +76,7 @@ namespace XTMF2.Web.Client
             SelfLog.Enable(m => Console.Error.WriteLine(m));
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
+                .Enrich.FromLogContext()
                 .WriteTo.BrowserConsole()
                 .CreateLogger();
         }
