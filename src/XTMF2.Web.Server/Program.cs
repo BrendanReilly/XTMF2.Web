@@ -18,6 +18,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 
 namespace XTMF2.Web.Server
 {
@@ -28,7 +30,22 @@ namespace XTMF2.Web.Server
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
+            .CreateLogger();
+            try
+            {
+                CreateHostBuilder(args).Build().Run();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         /// <summary>
@@ -42,11 +59,7 @@ namespace XTMF2.Web.Server
                 {
                     webBuilder.UseStaticWebAssets();
                     webBuilder.UseStartup<Startup>();
-                }).ConfigureLogging(logging =>
-                {
-                    logging.ClearProviders();
-                    logging.AddConsole();
-                });
+                }).UseSerilog(); 
         }
     }
 }

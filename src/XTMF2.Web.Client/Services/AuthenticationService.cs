@@ -30,17 +30,17 @@ namespace XTMF2.Web.Client.Services
         private readonly ISessionStorageService _storage;
 
         /// <summary>
+        /// 
         /// </summary>
         /// <param name="client"></param>
         /// <param name="storage"></param>
         /// <param name="logger"></param>
-        /// <param name="authProvider"></param>
         public AuthenticationService(AuthenticationClient client, ISessionStorageService storage,
-            ILogger<AuthenticationService> logger)
+            ILogger<AuthenticationService> logger, Serilog.ILogger logger2)
         {
             _client = client;
             _storage = storage;
-            _logger = logger;
+           _logger = logger;
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace XTMF2.Web.Client.Services
         /// <returns>True/false depending on login result.</returns>
         public async Task<bool> LoginAsync(string userName)
         {
-            string result = default;
+            string result;
             try
             {
                 result = await _client.LoginAsync("local");
@@ -85,6 +85,7 @@ namespace XTMF2.Web.Client.Services
 
             IsLoggedIn = true;
             _logger.LogInformation("Logged in.");
+            Serilog.Log.ForContext<AuthenticationService>().Information("Logged in.");
             Authenticated?.Invoke(this, new AuthenticatedEventArgs(userName, result));
             return true;
         }

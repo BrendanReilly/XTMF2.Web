@@ -331,3 +331,5 @@ ASALocalRun/
 
 .vscode/
 src/XTMF2.Web.Components/wwwroot/
+
+Logs/
