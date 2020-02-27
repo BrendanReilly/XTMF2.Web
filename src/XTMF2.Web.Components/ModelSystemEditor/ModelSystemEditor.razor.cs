@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System;
 using XTMF2.Web.Data.Models.Editing;
 using XTMF2.Web.ApiClient;
+using BoundaryModel = XTMF2.Web.Data.Models.Editing.BoundaryModel;
 
 namespace XTMF2.Web.Components
 {
@@ -29,14 +30,22 @@ namespace XTMF2.Web.Components
         protected Dictionary<Guid, BasePart> ComponentMap { get; set; }
 
         [Parameter]
-        public ModelSystemModel ModelSystem { get; set; }
+        public ModelSystemModel ModelSystemInfo { get; set; }
+
+        [Parameter]
+        public ModelSystemEditingModel Model { get; set; }
 
         [Inject]
         protected ModelSystemEditorClient EditorClient { get; set; }
 
         protected override void OnParametersSet()
         {
-            Console.WriteLine(ModelSystem.Name);
+            Console.WriteLine(ModelSystemInfo.Name);
+        }
+
+        private void UpdateComponentMap()
+        {
+
         }
 
         private void InitComponent(Guid objectId, ViewObject viewObject)
