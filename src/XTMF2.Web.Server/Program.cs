@@ -20,6 +20,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
+using XTMF2.UnitTests.Modules;
 
 namespace XTMF2.Web.Server
 {
@@ -30,6 +31,7 @@ namespace XTMF2.Web.Server
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
+            SimpleTestModule m = new SimpleTestModule(); ;
             Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Information)

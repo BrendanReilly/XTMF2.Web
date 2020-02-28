@@ -16,15 +16,12 @@
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Text.Json;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using XTMF2.UnitTests.Modules;
-using XTMF2.Web.Data.Converters;
 using XTMF2.Web.Data.Models.Editing;
 using XTMF2.Web.Server.Controllers;
 using XTMF2.Web.Server.Hubs;
@@ -33,7 +30,7 @@ using XTMF2.Web.Server.Session;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace XTMF2.Web.UnitTests.Controllers
+namespace XTMF2.Web.Testing.UnitTests.Controllers
 {
     /// <summary>
     ///     Unit tests related to the ModelSystemEditorController

@@ -19,7 +19,7 @@ using XTMF2.Controllers;
 using XTMF2.Editing;
 using XTMF2.UnitTests.Modules;
 
-namespace XTMF2.Web.UnitTests
+namespace XTMF2.Web.Testing.UnitTests
 {
     internal static class TestHelper
     {

@@ -30,38 +30,11 @@ namespace XTMF2.Web.Server.Session
     /// </summary>
     public class ModelSystemEditingSessions
     {
-
-        /// <summary>
-        ///     User dictionary of active model system sessions.
-        /// </summary>
-        /// <returns></returns>
-
-        public Dictionary<ValueTuple<User, Project>, List<ModelSystemSession>> UserModelSystemEditingSessions { get; } =
-        new Dictionary<ValueTuple<User, Project>, List<ModelSystemSession>>();
-
-        /// <summary>
-        /// Model system object reference tracker. Maps a model system session to the currently "active"
-        /// view model.
-        /// </summary>
-        /// <returns></returns>
-        public Dictionary<ModelSystemSession, ModelSystemEditingModel> ModelSystemEditingModels { get; } =
-        new Dictionary<ModelSystemSession, ModelSystemEditingModel>();
-
-        /// <summary>
-        /// Stores reference to model system editing trackers
-        /// </summary>
-        /// <value></value>
-        public Dictionary<ModelSystemSession, ModelSystemEditingTracker> ModelSystemEditingTrackers { get; } =
-        new Dictionary<ModelSystemSession, ModelSystemEditingTracker>();
-
-        public Dictionary<User, List<ProjectSession>> ProjectSessions { get; } = new Dictionary<User, List<ProjectSession>>();
-
         private readonly IMapper _mapper;
 
         private readonly XTMFRuntime _runtime;
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="mapper"></param>
         /// <param name="runtime"></param>
@@ -70,6 +43,32 @@ namespace XTMF2.Web.Server.Session
             _mapper = mapper;
             _runtime = runtime;
         }
+
+        /// <summary>
+        ///     User dictionary of active model system sessions.
+        /// </summary>
+        /// <returns></returns>
+
+        public Dictionary<ValueTuple<User, Project>, List<ModelSystemSession>> UserModelSystemEditingSessions { get; } =
+            new Dictionary<ValueTuple<User, Project>, List<ModelSystemSession>>();
+
+        /// <summary>
+        ///     Model system object reference tracker. Maps a model system session to the currently "active"
+        ///     view model.
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<ModelSystemSession, ModelSystemEditingModel> ModelSystemEditingModels { get; } =
+            new Dictionary<ModelSystemSession, ModelSystemEditingModel>();
+
+        /// <summary>
+        ///     Stores reference to model system editing trackers
+        /// </summary>
+        /// <value></value>
+        public Dictionary<ModelSystemSession, ModelSystemEditingTracker> ModelSystemEditingTrackers { get; } =
+            new Dictionary<ModelSystemSession, ModelSystemEditingTracker>();
+
+        public Dictionary<User, List<ProjectSession>> ProjectSessions { get; } =
+            new Dictionary<User, List<ProjectSession>>();
 
         /// <summary>
         ///     Clears all model system sessions for the associated user
@@ -81,10 +80,12 @@ namespace XTMF2.Web.Server.Session
             {
                 return;
             }
+
             var projectSessions = ProjectSessions[user];
             foreach (var projectSession in projectSessions)
             {
-                if (UserModelSystemEditingSessions.TryGetValue((user, projectSession.Project), out var modelSystemSessions))
+                if (UserModelSystemEditingSessions.TryGetValue((user, projectSession.Project),
+                    out var modelSystemSessions))
                 {
                     foreach (var modelSystemSession in modelSystemSessions)
                     {
@@ -96,6 +97,7 @@ namespace XTMF2.Web.Server.Session
                             ModelSystemEditingTrackers.Remove(modelSystemSession);
                         }
                     }
+
                     UserModelSystemEditingSessions[(user, projectSession.Project)].Clear();
                 }
             }
@@ -115,7 +117,7 @@ namespace XTMF2.Web.Server.Session
         }
 
         /// <summary>
-        /// Retrieves the active editing model for the passed model system session
+        ///     Retrieves the active editing model for the passed model system session
         /// </summary>
         /// <param name="session">The model system session</param>
         /// <returns>The editing model for the passed model system / session</returns>
@@ -125,25 +127,33 @@ namespace XTMF2.Web.Server.Session
             {
                 return null;
             }
+
             return tracker.ModelSystem;
         }
 
         /// <summary>
-        /// Gets a model system session for the associate model system and project. If a model system session does not
-        /// already exist, a new one is created and stored.
+        ///     Gets a model system session for the associate model system and project. If a model system session does not
+        ///     already exist, a new one is created and stored.
         /// </summary>
         /// <param name="user"></param>
         /// <param name="project"></param>
         /// <param name="modelSystemHeader"></param>
         /// <returns></returns>
-        public bool GetModelSystemSession(User user, Project project, ModelSystemHeader modelSystemHeader, out ModelSystemSession session, out CommandError commandError)
+        public bool GetModelSystemSession(User user, Project project, ModelSystemHeader modelSystemHeader,
+            out ModelSystemSession session, out CommandError commandError)
         {
             if (!ModelSystemSessionExistsForUser(user, project, modelSystemHeader))
             {
                 InitializeNewModelSystemSessionForUser(user, project, modelSystemHeader, out commandError);
+                if (commandError != null)
+                {
+                    session = null;
+                    return false;
+                }
             }
+            session = UserModelSystemEditingSessions[(user, project)]
+                .FirstOrDefault(s => s.ModelSystemHeader == modelSystemHeader);
             commandError = null;
-            session = UserModelSystemEditingSessions[(user, project)].FirstOrDefault(s => s.ModelSystemHeader == modelSystemHeader);
             return session == null ? false : true;
         }
 
@@ -153,44 +163,51 @@ namespace XTMF2.Web.Server.Session
             {
                 return false;
             }
+
             return sessions.Any(s => s.ModelSystemHeader == header);
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        /// /// <param name="user"></param>
+        /// ///
+        /// <param name="user"></param>
         /// <param name="project"></param>
         /// <param name="header"></param>
         /// <returns></returns>
-        private bool InitializeNewModelSystemSessionForUser(User user, Project project, ModelSystemHeader header, out CommandError commandError)
+        private bool InitializeNewModelSystemSessionForUser(User user, Project project, ModelSystemHeader header,
+            out CommandError commandError)
         {
-            if(!GetProjectSession(user,project, out var projectSession, out commandError)) {
+            if (!GetProjectSession(user, project, out var projectSession, out commandError))
+            {
                 return false;
             }
+
             if (!projectSession.EditModelSystem(user, header, out var modelSystemSession, out commandError))
             {
                 return false;
             }
+
             if (!UserModelSystemEditingSessions.TryGetValue((user, project), out var sessions))
             {
                 sessions = new List<ModelSystemSession>();
                 UserModelSystemEditingSessions[(user, project)] = sessions;
             }
+
             ModelSystemEditingTrackers[modelSystemSession] = new ModelSystemEditingTracker(modelSystemSession, _mapper);
             sessions.Add(modelSystemSession);
             return true;
         }
 
         /// <summary>
-        /// Attempts to get a project session for the user / project. If it does not exist, a new session is spun up.
+        ///     Attempts to get a project session for the user / project. If it does not exist, a new session is spun up.
         /// </summary>
         /// <param name="user"></param>
         /// <param name="project"></param>
         /// <param name="projectSession"></param>
         /// <param name="commandError"></param>
         /// <returns></returns>
-        public bool GetProjectSession(User user, Project project, out ProjectSession projectSession, out CommandError commandError)
+        public bool GetProjectSession(User user, Project project, out ProjectSession projectSession,
+            out CommandError commandError)
         {
             if (!ProjectSessions.TryGetValue(user, out var userProjectSessions))
             {
@@ -206,17 +223,15 @@ namespace XTMF2.Web.Server.Session
                 {
                     return false;
                 }
-                else
-                {
-                    userProjectSessions.Add(projectSession);
-                }
+
+                userProjectSessions.Add(projectSession);
             }
+
             commandError = null;
             return true;
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="session"></param>
         /// <returns></returns>
@@ -238,6 +253,7 @@ namespace XTMF2.Web.Server.Session
                 {
                     session.Dispose();
                 }
+
                 ProjectSessions[user].Clear();
             }
         }
@@ -249,7 +265,10 @@ namespace XTMF2.Web.Server.Session
         /// <param name="session"></param>
         public void TrackProjectSessionForUser(User user, ProjectSession session)
         {
-            if (!ProjectSessions.ContainsKey(user)) { ProjectSessions[user] = new List<ProjectSession>(); }
+            if (!ProjectSessions.ContainsKey(user))
+            {
+                ProjectSessions[user] = new List<ProjectSession>();
+            }
 
             ProjectSessions[user].Add(session);
         }

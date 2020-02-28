@@ -28,7 +28,7 @@ using XTMF2.Web.Server.Services;
 using XTMF2.Web.Server.Session;
 using Xunit;
 
-namespace XTMF2.Web.UnitTests.Controllers
+namespace XTMF2.Web.Testing.UnitTests.Controllers
 {
     /// <summary>
     ///     Unit tests related to the ProjectController

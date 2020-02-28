@@ -16,13 +16,10 @@
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using XTMF2.RuntimeModules;
 using XTMF2.Web.Server.Utils;
-using XTMF2.Web.UnitTests;
 using Xunit;
 
-
-namespace XTMF2.Web.UnitTests.Utils
+namespace XTMF2.Web.Testing.UnitTests.Utils
 {
     /// <summary>
     /// Unit tests for ModelSystemUtils

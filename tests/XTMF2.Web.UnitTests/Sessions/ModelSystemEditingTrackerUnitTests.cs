@@ -22,7 +22,7 @@ using XTMF2.Web.Server.Mapping.Profiles;
 using XTMF2.Web.Server.Session;
 using Xunit;
 
-namespace XTMF2.Web.UnitTests.Sessions
+namespace XTMF2.Web.Testing.UnitTests.Sessions
 {
     /// <summary>
     ///     Unit tests related to the model sysem tracker

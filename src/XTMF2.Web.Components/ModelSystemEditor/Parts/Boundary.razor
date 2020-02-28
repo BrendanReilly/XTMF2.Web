@@ -3,22 +3,26 @@
 @inherits ViewObjectPart<XTMF2.Web.Data.Models.Editing.BoundaryModel>
 
 <ModelSystemObject Model="Model" T="BoundaryModel">
+    
+    <div>@Model.Name</div>
+    <div>@Model.Boundaries.Count</div>
+
     @* Display all comment blocks in this boundary *@
     @foreach (var commentBlock in Model.CommentBlocks)
     {
-        <CommentBlock Model="commentBlock"></CommentBlock>
+        <CommentBlock Model="@commentBlock"></CommentBlock>
     }
 
     @* Display all starts in this boundary  *@
     @foreach (var start in Model.Starts)
     {
-        <Start Model="start"></Start>
+        <Start Model="@start"></Start>
     }
 
     @* Display all sub-boundaries and their child components *@
     @foreach (var boundary in Model.Boundaries)
     {
-        <Boundary Model="boundary"></Boundary>
+        <Boundary Model="@boundary"></Boundary>
     }
 
 </ModelSystemObject>

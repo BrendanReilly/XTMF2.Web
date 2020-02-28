@@ -52,10 +52,12 @@ namespace XTMF2.Web.Components.ModelSystemEditor
 
         private void UpdateComponentMap()
         {
+            Console.WriteLine(Model);
             // store all view object (model) references in map
             foreach (var viewObject in EditingUtil.ModelSystemObjects(Model))
             {
                 ViewObjectMap[viewObject.Id] = viewObject;
+                Console.WriteLine(viewObject);
             }
         }
 

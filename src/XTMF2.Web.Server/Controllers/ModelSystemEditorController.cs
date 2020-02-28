@@ -99,11 +99,14 @@ namespace XTMF2.Web.Server.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Loads a model system and returns its editing model/view. A new project session and model system session
+        /// are created when this method is called. The Servers session tracker will also instantiate the proper
+        /// editing tracker and view id maps. The view ids for the editing model are valid so long as a new editing
+        /// model is not created (via this method) -- or the editing is model is cleared through other cleanup mechanisms.
         /// </summary>
-        /// <param name="projectName"></param>
-        /// <param name="modelSystemName"></param>
-        /// <param name="userSession"></param>
+        /// <param name="projectName">The name of the project containing the model system.</param>
+        /// <param name="modelSystemName">The name of the model system.</param>
+        /// <param name="userSession">The user session.</param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ModelSystemEditingModel),StatusCodes.Status200OK)]
@@ -143,7 +146,7 @@ namespace XTMF2.Web.Server.Controllers
         /// </summary>
         /// <param name="projectName"></param>
         /// <param name="modelSystemName"></param>
-        /// <param name="user"></param>
+        /// <param name="userSession"></param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -163,14 +166,14 @@ namespace XTMF2.Web.Server.Controllers
         /// <summary>
         /// Adds a new boundary to the specified model system
         /// </summary>
-        /// <param name="projectName"></param>
-        /// <param name="modelSystemName"></param>
-        /// <param name="parentBoundaryPath"></param>
-        /// <param name="boundary"></param>
-        /// <param name="userSession"></param>
+        /// <param name="projectName">The name of the project.</param>
+        /// <param name="modelSystemName">The model system name.</param>
+        /// <param name="parentId">The id of the parent boundary.</param>
+        /// <param name="boundary">The boundary to add.</param>
+        /// <param name="userSession">The user session.</param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(BoundaryModel),StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPost("projects/{projectName}/model-systems/{modelSystemName}/boundary")]
         public IActionResult AddBoundary(string projectName, string modelSystemName, [FromQuery] Guid parentId,
@@ -185,7 +188,8 @@ namespace XTMF2.Web.Server.Controllers
             {
                 return new UnprocessableEntityObjectResult("Specified parent boundary does not exist.");
             }
-            if (!session.AddBoundary(userSession.User, parentBoundary, boundary.Name, out var newBoundary, out var error))
+            if (!session.AddBoundary(userSession.User, parentBoundary, boundary.Name, out var newBoundary, out var error) ||
+                newBoundary == null)
             {
                 return new UnprocessableEntityObjectResult(error);
             }
@@ -198,10 +202,12 @@ namespace XTMF2.Web.Server.Controllers
         /// </summary>
         /// <param name="projectName"></param>
         /// <param name="modelSystemName"></param>
+        /// <param name="parentId"></param>
+        /// <param name="startModel"></param>
         /// <param name="userSession"></param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(StartModel),StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPost("projects/{projectName}/model-systems/{modelSystemName}/start")]
         public IActionResult AddModelSystemStart(string projectName, string modelSystemName, [FromQuery] Guid parentId,
@@ -217,7 +223,8 @@ namespace XTMF2.Web.Server.Controllers
                 return new UnprocessableEntityObjectResult("Specified parent boundary does not exist.");
             }
             if (!session.AddModelSystemStart(userSession.User, parentBoundary, startModel.Name,
-            new Rectangle(startModel.Location.X, startModel.Location.Y, startModel.Location.Width, startModel.Location.Height), out var start, out var error))
+            new Rectangle(startModel.Location.X, startModel.Location.Y, startModel.Location.Width, startModel.Location.Height), out var start, out var error)
+            || start == null)
             {
                 return new UnprocessableEntityObjectResult(error);
             }
@@ -234,7 +241,7 @@ namespace XTMF2.Web.Server.Controllers
         /// <param name="userSession"></param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(CommentBlockModel),StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPost("projects/{projectName}/model-systems/{modelSystemName}/comment-block")]
@@ -265,11 +272,13 @@ namespace XTMF2.Web.Server.Controllers
         /// </summary>
         /// <param name="projectName"></param>
         /// <param name="modelSystemName"></param>
-        /// <param name="commentBlock"></param>
+        /// <param name="originNodeId"></param>
+        /// <param name="destinationNodeId"></param>
+        /// <param name="originHookId"></param>
         /// <param name="userSession"></param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(LinkModel),StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [HttpPost("projects/{projectName}/model-systems/{modelSystemName}/link")]
         public IActionResult AddLink(string projectName, string modelSystemName, [FromQuery] Guid originNodeId, [FromQuery] Guid destinationNodeId,
@@ -296,7 +305,7 @@ namespace XTMF2.Web.Server.Controllers
         /// </summary>
         /// <param name="projectName"></param>
         /// <param name="modelSystemName"></param>
-        /// <param name="parentBoundaryId"></param>
+        /// <param name="parentId"></param>
         /// <param name="nodeModel"></param>
         /// <param name="userSession"></param>
         /// <returns></returns>
@@ -363,7 +372,9 @@ namespace XTMF2.Web.Server.Controllers
         /// </summary>
         /// <param name="projectName"></param>
         /// <param name="modelSystemName"></param>
+        /// <param name="commentBlockId"></param>
         /// <param name="userSession"></param>
+        /// <param name="parentBoundaryId"></param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -394,8 +405,9 @@ namespace XTMF2.Web.Server.Controllers
         /// </summary>
         /// <param name="projectName"></param>
         /// <param name="modelSystemName"></param>
-        /// <param name="id"></param>
+        /// <param name="boundaryId"></param>
         /// <param name="userSession"></param>
+        /// <param name="parentBoundaryId"></param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -423,7 +435,8 @@ namespace XTMF2.Web.Server.Controllers
         /// </summary>
         /// <param name="projectName">The name of the project the model system belongs to.</param>
         /// <param name="modelSystemName">The name of the model system.</param>
-        /// <param name="id">The id or path of the start element to remove.</param>
+        /// <param name="startId"></param>
+        /// <param name="userSession"></param>
         /// <returns>OK result if successful, otherwise other error messages depending on result.</returns>
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]

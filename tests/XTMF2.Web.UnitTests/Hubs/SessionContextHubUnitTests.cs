@@ -24,7 +24,7 @@ using XTMF2.Web.Server.Mapping.Profiles;
 using XTMF2.Web.Server.Session;
 using Xunit;
 
-namespace XTMF2.Web.UnitTests.Hubs
+namespace XTMF2.Web.Testing.UnitTests.Hubs
 {
     /// <summary>
     ///     Unit tests related to the SessionContextUnitHub

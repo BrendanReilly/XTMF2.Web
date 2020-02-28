@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\XTMF2\src\XTMF2\XTMF2.csproj" />
+    <ProjectReference Include="..\..\src\XTMF2\src\XTMF2.Interfaces\XTMF2.Interfaces.csproj" />
+    <ProjectReference Include="..\..\src\XTMF2\src\XTMF2.Client\XTMF2.Client.csproj" />
+    <ProjectReference Include="..\..\src\XTMF2\tests\XTMF2.UnitTests\XTMF2.UnitTests.csproj" />
+  </ItemGroup>
+</Project>

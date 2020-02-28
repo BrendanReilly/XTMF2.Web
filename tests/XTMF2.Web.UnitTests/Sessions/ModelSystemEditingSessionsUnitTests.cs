@@ -16,9 +16,8 @@
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using Xunit;
 
-namespace XTMF2.Web.UnitTests.Sessions
+namespace XTMF2.Web.Testing.UnitTests.Sessions
 {
     /// <summary>
     ///     Unit tests related to the model system sessions
