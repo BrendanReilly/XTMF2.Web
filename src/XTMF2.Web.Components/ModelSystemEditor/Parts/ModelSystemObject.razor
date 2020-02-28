@@ -1,7 +1,8 @@
 ﻿@using XTMF2.Web.Data.Models.Editing
 @namespace XTMF2.Web.Components.ModelSystemEditor
 @typeparam T
-<div data-view-object-id="@Model.Id" data-view-object-type="@Model.GetType()">
+
+<div data-view-object-id="@Model.Id" data-view-object-type="@Model.GetType()" @ref="_containerDiv" class="view-object-container">
 
     @ChildContent
 

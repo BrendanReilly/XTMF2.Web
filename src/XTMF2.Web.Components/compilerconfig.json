@@ -1,13 +1,24 @@
 [
-    {
-        "outputFile": "wwwroot/transformed.css",
-        "inputFile": "ModelSystemEditor/Style.scss",
-        "minify": {
-            "enabled": true
-        },
-        "includeInProject": true,
-        "options": {
-            "sourceMap": true
-        }
+  {
+    "outputFile": "wwwroot/model-system-editor/style.css",
+    "inputFile": "ModelSystemEditor/Style.scss",
+    "minify": {
+      "enabled": true
+    },
+    "includeInProject": true,
+    "options": {
+      "sourceMap": true
     }
+  },
+  {
+    "outputFile": "wwwroot/model-system-editor/model-system-editor.js",
+    "inputFile": "ModelSystemEditor/ModelSystemEditor.js",
+    "minify": {
+      "enabled": true
+    },
+    "includeInProject": true,
+    "options": {
+      "sourceMap": true
+    }
+  }
 ]

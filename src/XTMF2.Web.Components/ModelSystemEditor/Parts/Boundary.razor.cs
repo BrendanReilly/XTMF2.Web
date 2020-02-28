@@ -24,6 +24,8 @@ namespace XTMF2.Web.Components.ModelSystemEditor
 {
     public partial class Boundary : ViewObjectPart<BoundaryModel>
     {
+        private ModelSystemObject<BoundaryModel> _ModelSystemObjectRef;
+
         protected override void OnInitialized()
         {
             Console.WriteLine("In boundary override init.");

@@ -64,6 +64,18 @@ namespace XTMF2.Web.Components.ModelSystemEditor
             Editor.UnRegisterComponent(this);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        public void UpdateBounds(float x, float y, float width, float height)
+        {
+            Console.WriteLine($"{x} {y} {width} {height}");
+        }
+
         private void ObjectBoundsChanged()
         {
             BoundsChanged?.Invoke(this, new BoundsChangedEventArgs(Model.Location, Model.Location));

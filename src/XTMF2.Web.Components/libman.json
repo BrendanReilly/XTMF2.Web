@@ -1,23 +1,23 @@
 {
   "version": "1.0",
   "defaultProvider": "cdnjs",
-  "defaultDestination": "Lib/",
+  "defaultDestination": "wwwroot/",
   "libraries": [
     {
       "provider": "jsdelivr",
       "library": "notyf@3.1.0",
-      "destination": "Lib/",
+      "destination": "wwwroot/",
       "files": [
         "notyf.min.js"
       ]
     },
     {
       "provider": "jsdelivr",
-      "library": "interact-js@2.1.0",
-      "destination": "Lib/",
+      "library": "interactjs@1.8.5",
+      "destination": "wwwroot/",
       "files": [
-        "interact.js",
-        "interact.min.js"
+        "dist/interact.js",
+        "dist/interact.min.js"
       ]
     }
   ]

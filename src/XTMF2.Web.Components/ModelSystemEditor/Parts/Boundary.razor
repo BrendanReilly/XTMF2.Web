@@ -2,10 +2,10 @@
 @using XTMF2.Web.Data.Models.Editing
 @inherits ViewObjectPart<XTMF2.Web.Data.Models.Editing.BoundaryModel>
 
-<ModelSystemObject Model="Model" T="BoundaryModel">
+<ModelSystemObject Model="Model" T="BoundaryModel" @ref="_ModelSystemObjectRef" ViewObjectComponent="@this">
     
-    <div>@Model.Name</div>
-    <div>@Model.Boundaries.Count</div>
+    <span>@Model.Name</span><br/><br />
+    <span>@Model.Boundaries.Count</span><br /><br />
 
     @* Display all comment blocks in this boundary *@
     @foreach (var commentBlock in Model.CommentBlocks)
