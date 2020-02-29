@@ -36,8 +36,10 @@ using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using Serilog;
+using XTMF2.Web.Data.Converters;
 using XTMF2.Web.Server.Authorization;
 using XTMF2.Web.Server.Controllers;
+using XTMF2.Web.Server.Controllers.Filters;
 using XTMF2.Web.Server.Hubs;
 using XTMF2.Web.Server.Mapping.Binders;
 using XTMF2.Web.Server.Options;
@@ -107,15 +109,8 @@ namespace XTMF2.Web.Server
             services.AddSingleton<ModelSystemEditingSessions>();
             services.AddSingleton<ProjectSessions>();
             services.AddSingleton<UserTimeoutService>();
-            services.AddScoped(providers =>
-            {
-                /* This section of code is commented out temporarily until some further changes are mae on the client */
-                /*
-                var context = (IHttpContextAccessor) providers.GetService(typeof(IHttpContextAccessor));
-                var userManager = (UserManager<User>) providers.GetService(typeof(UserManager<User>));
-                var user = userManager.FindByNameAsync(context.HttpContext.User.Claims.FirstOrDefault()?.Value); */
-                return ((XTMFRuntime)providers.GetService(typeof(XTMFRuntime))).UserController.Users.FirstOrDefault();
-            });
+            services.AddSingleton<MappingReferenceTracker>();
+            services.AddScoped(providers => ((XTMFRuntime)providers.GetService(typeof(XTMFRuntime))).UserController.Users.FirstOrDefault());
             services.Configure<UserTimeoutOptions>(Configuration);
 
 
@@ -155,9 +150,13 @@ namespace XTMF2.Web.Server
                     new AspNetCoreOperationSecurityScopeProcessor("JWT"));
             });
 
-            services.AddControllers(options => {
-                 options.ModelBinderProviders.Insert(0, new ModelSystemObjectBinderProvider());
-                 options.Filters.Add(typeof(UserTimeoutActionFilter));
+            services.AddControllers(options =>
+            {
+                options.ModelBinderProviders.Insert(0, new ModelSystemObjectBinderProvider());
+                options.Filters.Add(typeof(UserTimeoutActionFilter));
+            }).AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new TypeConverter());
             });
 
             IdentityModelEventSource.ShowPII = true;

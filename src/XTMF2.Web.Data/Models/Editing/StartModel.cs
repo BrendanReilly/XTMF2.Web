@@ -20,13 +20,17 @@ using System.Text.Json.Serialization;
 
 namespace XTMF2.Web.Data.Models.Editing
 {
-    public class StartModel : ViewObject
+    public class StartModel : NodeModel
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public new string Name { get; set; }
 
-        [JsonIgnore] public BoundaryModel ContainedWithin { get; set; }
+        public new string Description { get; set; }
 
-        public Type Type { get; set; }
+        [JsonIgnore] public new BoundaryModel ContainedWithin { get; set; }
+
+        [JsonIgnore]
+        public new Type Type { get; set; }
+
+        public new string TypeString { get; set; }
     }
 }

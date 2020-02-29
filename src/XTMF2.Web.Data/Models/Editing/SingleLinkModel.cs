@@ -15,15 +15,23 @@
 //     You should have received a copy of the GNU General Public License
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Text.Json.Serialization;
-using XTMF2.Web.Data.Models.Editing;
 
 namespace XTMF2.Web.Data.Models.Editing
 {
-    public class SingleLinkModel : LinkModel
+    public class SingleLinkModel : ViewObject
     {
+        [JsonIgnore] public NodeModel Origin { get; set; }
 
-        [JsonIgnore]
-        public NodeModel Destination { get; set; }
+        [JsonIgnore] public NodeHookModel OriginHook { get; set; }
+
+        public Guid OriginId { get; set; }
+
+        public Guid OriginHookId { get; set; }
+
+        [JsonIgnore] public NodeModel Destination { get; set; }
+
+        public Guid DestinationId { get; set; }
     }
 }

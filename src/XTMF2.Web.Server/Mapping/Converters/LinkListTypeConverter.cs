@@ -15,32 +15,31 @@
 //     You should have received a copy of the GNU General Public License
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
 using AutoMapper;
-using XTMF2.ModelSystemConstruct;
-using XTMF2.Web.Data.Models.Editing;
 
 namespace XTMF2.Web.Server.Mapping.Converters
 {
-    /// <summary>
-    ///     Maps Links to the appropriate link type
-    /// </summary>
-    public class LinkConverter<TDst> : ITypeConverter<Link, TDst>
+    public class LinkListTypeConverter<TSrc, TDst> : IValueConverter<List<TSrc>, List<TDst>>
     {
         /// <summary>
-        ///     Converts the Link to the appropriate type
+        /// 
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="destination"></param>
+        /// <param name="sourceMember"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public TDst Convert(Link source, TDst destination, ResolutionContext context)
+        public List<TDst> Convert(List<TSrc> sourceMember, ResolutionContext context)
         {
-            if (source is TDst)
+            List<TDst> links = new List<TDst>();
+            foreach (var link in sourceMember)
             {
-                return (TDst)(object)context.Mapper.Map<MultiLinkModel>(source);
+                if (link is TSrc)
+                {
+                    links.Add(context.Mapper.Map<TDst>(link));
+                }
             }
-
-            return (TDst)(object)context.Mapper.Map<SingleLinkModel>(source);
+            return links;
         }
     }
 }

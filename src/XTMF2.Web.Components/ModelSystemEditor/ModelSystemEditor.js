@@ -1,4 +1,5 @@
 
+
 window.modelSystemEditor = {
     /**
      * 
@@ -25,7 +26,8 @@ window.modelSystemEditor = {
 
                 inertia: true
             })
-            .draggable({
+            .draggable({})
+            /*/.draggable({
                 inertia: false,
                 modifiers: [
                     interact.modifiers.restrictRect({
@@ -37,8 +39,10 @@ window.modelSystemEditor = {
                 onmove: (event) => onMove(event, objectRef),
                 // onend: (event) => onEnd(event, objectRef)
 
-            })
+            }) */
+            .on('dragmove', (event) => onMove(event,objectRef))
             .on("resizemove", (event) => onResizeMove(event, objectRef));
+            
     }
 };
 
@@ -50,7 +54,7 @@ window.modelSystemEditor = {
 function onResizeMove(event, objectRef) {
     var target = event.target;
     var x = (parseFloat(target.getAttribute("data-x")) || 0);
-    var y = (parseFloat(target.getAttribute("data-y")) || 0);
+    var y = (parseFloat(target.getAttribute("data-y")) || 0); 
 
     // update the element's style
     target.style.width = event.rect.width + "px";

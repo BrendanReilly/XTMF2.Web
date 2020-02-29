@@ -25,12 +25,13 @@ using Xunit;
 namespace XTMF2.Web.Testing.UnitTests.Sessions
 {
     /// <summary>
-    ///     Unit tests related to the model sysem tracker
+    ///     Unit tests related to the model system tracker
     /// </summary>
     public sealed class ModelSystemEditingTrackerUnitTests : IDisposable
     {
         private IMapper _mapper;
         private User _user;
+        private XTMFRuntime _runtime;
         public ModelSystemEditingTrackerUnitTests()
         {
             var config = new MapperConfiguration(cfg =>
@@ -39,6 +40,7 @@ namespace XTMF2.Web.Testing.UnitTests.Sessions
                              cfg.AddProfile<ProjectProfile>();
                          });
             _mapper = config.CreateMapper();
+            _runtime = TestHelper.Runtime;
             _user = TestHelper.CreateTestUser(Guid.NewGuid().ToString());
         }
 
@@ -105,7 +107,8 @@ namespace XTMF2.Web.Testing.UnitTests.Sessions
 
         public void Dispose()
         {
-
+            TestHelper.CleanUpTestContext(_runtime, _user.UserName);
+            _runtime.Shutdown();
         }
     }
 }

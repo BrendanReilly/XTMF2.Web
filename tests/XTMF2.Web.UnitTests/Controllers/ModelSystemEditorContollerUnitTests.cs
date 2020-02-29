@@ -19,13 +19,19 @@ using System;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic.CompilerServices;
 using Moq;
+using XTMF2.ModelSystemConstruct;
 using XTMF2.UnitTests.Modules;
 using XTMF2.Web.Data.Models.Editing;
 using XTMF2.Web.Server.Controllers;
 using XTMF2.Web.Server.Hubs;
+using XTMF2.Web.Server.Mapping.Actions;
+using XTMF2.Web.Server.Mapping.Converters;
 using XTMF2.Web.Server.Mapping.Profiles;
+using XTMF2.Web.Server.Services;
 using XTMF2.Web.Server.Session;
 using Xunit;
 using Xunit.Abstractions;
@@ -46,7 +52,7 @@ namespace XTMF2.Web.Testing.UnitTests.Controllers
         private readonly ITestOutputHelper output;
         private readonly string _userName;
         private readonly User _user;
-
+        private readonly MappingReferenceTracker _tracker;
         /// <summary>
         /// </summary>
         /// <param name="output"></param>
@@ -57,6 +63,7 @@ namespace XTMF2.Web.Testing.UnitTests.Controllers
                  cfg.AddProfile<ModelSystemProfile>();
                  cfg.AddProfile<ProjectProfile>();
              });
+            _tracker = new MappingReferenceTracker();
             _mapper = config.CreateMapper();
             _userName = Guid.NewGuid().ToString();
             _user = TestHelper.CreateTestUser(_userName);
@@ -115,8 +122,29 @@ namespace XTMF2.Web.Testing.UnitTests.Controllers
             Assert.Single(modelSystem.GlobalBoundary.Starts);
             Assert.Equal("TestStart", modelSystem.GlobalBoundary.Starts[0].Name);
             Assert.Collection(modelSystem.GlobalBoundary.Modules,
-                item => { Assert.Equal("TestNode1", item.Name); });
+                item => { Assert.Equal("TestNode1", item.Name); },
+                item => { Assert.Equal("TestNode2", item.Name); }
+                );
             Assert.NotNull(modelSystem.GlobalBoundary.Modules[0].Type);
+        }
+
+        /// <summary>
+        /// Checks querying of a model system and that all references and IDs are stored and deserialized properly
+        /// </summary>
+        [Fact]
+        public void GetModelSystem_ReturnsCorrectModelSystem_AndSerializeDeserializeCorrectly()
+        {
+            TestHelper.InitializeTestModelSystem(_user, "TestProject", "TestModelSystem", out var modelSystemSession);
+            var result = (OkObjectResult)_controller.GetModelSystem("TestProject", "TestModelSystem", _userSession);
+            Assert.IsType<ModelSystemEditingModel>(result.Value);
+            var modelSystem = (ModelSystemEditingModel)result.Value;
+
+            var modelSystemJson = System.Text.Json.JsonSerializer.Serialize(modelSystem);
+
+            ModelSystemEditingModel modelSystemConvert = (ModelSystemEditingModel)System.Text.Json.JsonSerializer.Deserialize(modelSystemJson, typeof(ModelSystemEditingModel));
+
+            Assert.True(modelSystemConvert.GlobalBoundary.Links[0].DestinationIds[0]
+                .Equals(modelSystemConvert.GlobalBoundary.Modules[0].Id));
         }
 
         /// <summary>

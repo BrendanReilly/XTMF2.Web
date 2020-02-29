@@ -21,6 +21,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using XTMF2.ModelSystemConstruct;
 using XTMF2.Web.Data.Models.Editing;
+using XTMF2.Web.Server.Services;
 using XTMF2.Web.Server.Session;
 
 namespace XTMF2.Web.Server.Mapping.Actions
@@ -31,6 +32,9 @@ namespace XTMF2.Web.Server.Mapping.Actions
     public class GenerateModelSystemObjectIdAction<TSrc, TDest> : IMappingAction<TSrc, TDest>
             where TDest : ViewObject
     {
+        public GenerateModelSystemObjectIdAction()
+        {
+        }
         public void Process(TSrc source, TDest destination, ResolutionContext context)
         {
             if(destination.Id == Guid.Empty) { 

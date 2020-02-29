@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using XTMF2.Web.Server.Services;
 using XTMF2.Web.Server.Session;
 
-namespace XTMF2.Web.Server.Controllers
+namespace XTMF2.Web.Server.Controllers.Filters
 {
     public class UserTimeoutActionFilter : IActionFilter
     {

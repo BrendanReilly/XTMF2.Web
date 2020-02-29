@@ -17,7 +17,6 @@
 
 using System;
 using System.Text.Json.Serialization;
-using XTMF2.Web.Data.Interfaces.Editing;
 
 namespace XTMF2.Web.Data.Models.Editing
 {
@@ -27,11 +26,12 @@ namespace XTMF2.Web.Data.Models.Editing
 
         public string Description { get; set; }
 
-        [JsonIgnore]
-        public BoundaryModel ContainedWithin { get; set; }
+        [JsonIgnore] public BoundaryModel ContainedWithin { get; set; }
 
-        public Guid ContainedWithinId { get; 
-            set; }
-        public Type Type { get; set; }
+        public Guid ContainedWithinId { get; set; }
+
+        [JsonIgnore] public Type Type { get; set; }
+
+        public string TypeString { get; set; }
     }
 }

@@ -16,6 +16,7 @@
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Blazor.Hosting;
@@ -26,6 +27,8 @@ using XTMF2.Web.Client.Services;
 using XTMF2.Web.ApiClient;
 using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Http.Connections.Client;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace XTMF2.Web.Client
 {
@@ -37,7 +40,7 @@ namespace XTMF2.Web.Client
         /// <summary>
         /// </summary>
         /// <param name="args"></param>
-        public async static Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             ConfigureLogger();
             var builder = CreateHostBuilder(args);
@@ -63,6 +66,13 @@ namespace XTMF2.Web.Client
             services.AddLogging();
             services.AddBlazoredSessionStorage();
             services.AddAuthorizationCore();
+
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                Converters = new List<JsonConverter>()
+            };
         }
 
         /// <summary>

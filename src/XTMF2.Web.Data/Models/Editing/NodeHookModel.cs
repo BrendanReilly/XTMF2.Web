@@ -16,13 +16,17 @@
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Text.Json.Serialization;
 using XTMF2.Web.Data.Interfaces.Editing;
 
 namespace XTMF2.Web.Data.Models.Editing
 {
     public class NodeHookModel : ViewObject
     {
+        [JsonIgnore]
         public Type Type { get; set; }
+
+        public string TypeString { get; set; }
 
     }
 }

@@ -6,6 +6,24 @@ background {
 
 }
 
+#model-system-editor {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 1500px;
+    height: 1400px;
+    background-color: #eee;
+    touch-action: manipulation;
+}
+
 .view-object-container {
-    background: white;
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-color: #aaf;
+    padding: 1em;
+    border-radius: 5px;
+    margin: 3em;
+    box-sizing: border-box;
+    user-select: none;
 }

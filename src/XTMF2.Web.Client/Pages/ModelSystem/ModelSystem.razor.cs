@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
@@ -53,7 +54,9 @@ namespace XTMF2.Web.Client.Pages
             }
             catch (ApiException exception)
             {
-                NotificationService.ErrorMessage($"Unable to load model system: {exception.Response}");
+                Logger.LogError($"Unable to load model system",exception);
+                Logger.LogError(exception.ToString());
+                NotificationService.ErrorMessage($"Unable to load model system: {exception.ToString()}");
                 IsLoaded = false;
             }
         }

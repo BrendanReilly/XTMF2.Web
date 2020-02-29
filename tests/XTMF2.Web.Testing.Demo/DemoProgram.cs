@@ -37,9 +37,9 @@ namespace XTMF2.Web.Testing.Demo
             modelSystemSession.AddNode(user, modelSystemSession.ModelSystem.GlobalBoundary, "TestNode1",
                 typeof(SimpleTestModule), new Rectangle(10, 10, 100, 100), out var node, out error);
             modelSystemSession.AddLink(user, start, start.Hooks[0], node, out var link, out error);
-            modelSystemSession.AddBoundary(user, modelSystemSession.ModelSystem.GlobalBoundary, "TestBoundary1",
-                out var boundary, out error);
-            modelSystemSession.AddNode(user, boundary, "TestNode2",
+            //modelSystemSession.AddBoundary(user, modelSystemSession.ModelSystem.GlobalBoundary, "TestBoundary1",
+            //    out var boundary, out error);
+            modelSystemSession.AddNode(user, modelSystemSession.ModelSystem.GlobalBoundary, "TestNode2",
                 typeof(SimpleTestModule), new Rectangle(10, 10, 100, 100), out var testNode2, out error);
             modelSystemSession.Save(out error);
             Runtime.Shutdown();

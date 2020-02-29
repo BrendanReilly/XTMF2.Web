@@ -15,32 +15,28 @@
 //     You should have received a copy of the GNU General Public License
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
-using AutoMapper;
-using XTMF2.ModelSystemConstruct;
-using XTMF2.Web.Data.Models.Editing;
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
-namespace XTMF2.Web.Server.Mapping.Converters
+namespace XTMF2.Web.Server.Controllers.Filters
 {
     /// <summary>
-    ///     Maps Links to the appropriate link type
     /// </summary>
-    public class LinkConverter<TDst> : ITypeConverter<Link, TDst>
+    public class ModelSystemSerializationFilterAttribute : ActionFilterAttribute
     {
-        /// <summary>
-        ///     Converts the Link to the appropriate type
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="destination"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public TDst Convert(Link source, TDst destination, ResolutionContext context)
+        public override void OnActionExecuted(ActionExecutedContext context)
         {
-            if (source is TDst)
+            if (context.Result is ObjectResult objectResult)
             {
-                return (TDst)(object)context.Mapper.Map<MultiLinkModel>(source);
+                objectResult.Formatters.Add(new SystemTextJsonOutputFormatter(new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                }));
             }
 
-            return (TDst)(object)context.Mapper.Map<SingleLinkModel>(source);
+            base.OnActionExecuted(context);
         }
     }
 }

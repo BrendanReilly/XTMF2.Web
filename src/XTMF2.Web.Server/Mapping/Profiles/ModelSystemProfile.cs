@@ -16,13 +16,15 @@
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using AutoMapper;
 using XTMF2.ModelSystemConstruct;
 using XTMF2.Web.Data.Models;
 using XTMF2.Web.Data.Models.Editing;
 using XTMF2.Web.Server.Mapping.Actions;
 using XTMF2.Web.Server.Mapping.Converters;
-using XTMF2.Web.Server.Session;
+using XTMF2.Web.Server.Services;
 
 namespace XTMF2.Web.Server.Mapping.Profiles
 {
@@ -31,6 +33,12 @@ namespace XTMF2.Web.Server.Mapping.Profiles
     /// </summary>
     public class ModelSystemProfile : Profile
     {
+        public ModelSystemProfile()
+        {
+            CreateMap<ModelSystemHeader, ModelSystemModel>();
+            MapEditorProfile();
+        }
+
         /// <summary>
         ///     Create mapping profiles for model system editor objects
         /// </summary>
@@ -39,38 +47,39 @@ namespace XTMF2.Web.Server.Mapping.Profiles
             CreateMap<ModelSystem, ModelSystemEditingModel>();
             CreateMap<Boundary, BoundaryModel>()
                 .BeforeMap<Actions.GenerateModelSystemObjectIdAction<Boundary, BoundaryModel>>();
+
             CreateMap<Link, LinkModel>()
-            .BeforeMap<Actions.GenerateModelSystemObjectIdAction<Link, LinkModel>>()
-                .ConvertUsing(typeof(LinkConverter));
-            CreateMap<MultiLink, MultiLinkModel>()
-            .BeforeMap<Actions.GenerateModelSystemObjectIdAction<MultiLink, MultiLinkModel>>();
-            CreateMap<SingleLink, SingleLinkModel>()
-            .BeforeMap<Actions.GenerateModelSystemObjectIdAction<SingleLink, SingleLinkModel>>()
+                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<Link, LinkModel>>();
+            CreateMap<Link, MultiLinkModel>()
+                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<Link, MultiLinkModel>>();
+            CreateMap<MultiLink, LinkModel>()
+                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<MultiLink, LinkModel>>();
+            CreateMap<SingleLink, LinkModel>()
+                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<SingleLink, LinkModel>>()
                 .AfterMap((src, dest) =>
                 {
                     dest.OriginHookId = dest.OriginHook.Id;
                     dest.OriginId = dest.Origin.Id;
                 });
             CreateMap<Start, StartModel>()
-            .BeforeMap<Actions.GenerateModelSystemObjectIdAction<Start, StartModel>>();
+                .ForMember(m => m.TypeString, opt => opt.MapFrom(x => x.Type.ToString()))
+                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<Start, StartModel>>();
+
             CreateMap<Node, NodeModel>()
                 .ForMember(m => m.ContainedWithin, opt => { opt.MapFrom(x => x.ContainedWithin); })
-                .ForMember(m => m.ContainedWithinId, opt => { opt.Ignore(); })
-                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<Node, NodeModel>>();
-            //               .AfterMap((src, dest) => { dest.ContainedWithinId = dest.ContainedWithin.Id; });
+                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<Node, NodeModel>>()
+                .ForMember(m => m.TypeString, opt => opt.MapFrom(x => x.Type.ToString()))
+                .AfterMap((src, dest) => { dest.ContainedWithinId = dest.ContainedWithin.Id; });
 
             CreateMap<NodeHook, NodeHookModel>()
-            .BeforeMap<Actions.GenerateModelSystemObjectIdAction<NodeHook, NodeHookModel>>();
+                .ForMember(m => m.TypeString, opt => opt.MapFrom(x => x.Type.ToString()))
+                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<NodeHook, NodeHookModel>>();
             CreateMap<CommentBlock, CommentBlockModel>()
-            .BeforeMap<Actions.GenerateModelSystemObjectIdAction<CommentBlock, CommentBlockModel>>();
+                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<CommentBlock, CommentBlockModel>>();
             CreateMap<Rectangle, Data.Types.Rectangle>();
-            CreateMap<Data.Types.Rectangle, Rectangle>();
+            CreateMap<Data.Types.Rectangle,Rectangle > ();
+
         }
 
-        public ModelSystemProfile()
-        {
-            CreateMap<ModelSystemHeader, ModelSystemModel>();
-            MapEditorProfile();
-        }
     }
 }

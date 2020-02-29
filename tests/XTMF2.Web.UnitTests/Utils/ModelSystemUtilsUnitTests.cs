@@ -97,6 +97,7 @@ namespace XTMF2.Web.Testing.UnitTests.Utils
         public void Dispose()
         {
             TestHelper.CleanUpTestContext(_runtime,_user.UserName);
+            _runtime.Shutdown();
         }
     }
 }

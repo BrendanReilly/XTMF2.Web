@@ -61,9 +61,9 @@ namespace XTMF2.Web.Server.Utils
                 case Start _:
                     return typeof(StartModel);
                 case SingleLink _:
-                    return typeof(SingleLinkModel);
+                    return typeof(LinkModel);
                 case MultiLink _:
-                    return typeof(MultiLinkModel);
+                    return typeof(LinkModel);
                 case CommentBlock _:
                     return typeof(CommentBlockModel);
                 case Node _:

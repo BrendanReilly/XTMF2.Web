@@ -16,13 +16,14 @@
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using XTMF2.Web.Data.Interfaces.Editing;
 using XTMF2.Web.Data.Types;
 
 namespace XTMF2.Web.Data.Models.Editing
 {
-    public abstract class LinkModel : ViewObject
+    public class LinkModel : ViewObject
     {
         [JsonIgnore]
         public NodeModel Origin { get; set; }
@@ -33,5 +34,18 @@ namespace XTMF2.Web.Data.Models.Editing
         public Guid OriginId { get; set; }
 
         public Guid OriginHookId { get; set; }
+
+        public List<Guid> DestinationIds { get; set; }
+
+        [JsonIgnore]
+        public List<NodeModel> Destinations { get; set; }
+
+        public LinkType LinkType { get; set; }
+    }
+
+    public enum LinkType
+    {
+        Single,
+        Multi
     }
 }

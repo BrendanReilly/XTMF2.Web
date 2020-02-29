@@ -1,4 +1,4 @@
-﻿//     Copyright 2017-2020 University of Toronto
+//     Copyright 2017-2020 University of Toronto
 // 
 //     This file is part of XTMF2.
 // 
@@ -15,32 +15,52 @@
 //     You should have received a copy of the GNU General Public License
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using AutoMapper;
 using XTMF2.ModelSystemConstruct;
 using XTMF2.Web.Data.Models.Editing;
+using XTMF2.Web.Server.Services;
 
 namespace XTMF2.Web.Server.Mapping.Converters
 {
     /// <summary>
     ///     Maps Links to the appropriate link type
     /// </summary>
-    public class LinkConverter<TDst> : ITypeConverter<Link, TDst>
+    public class MultiLinkListTypeConverter : ITypeConverter<ReadOnlyObservableCollection<Link>, List<MultiLinkModel>>
     {
+        private MappingReferenceTracker _tracker;
+        public MultiLinkListTypeConverter(MappingReferenceTracker tracker)
+        {
+            _tracker = tracker;
+        }
         /// <summary>
-        ///     Converts the Link to the appropriate type
         /// </summary>
         /// <param name="source"></param>
         /// <param name="destination"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public TDst Convert(Link source, TDst destination, ResolutionContext context)
+        public List<MultiLinkModel> Convert(ReadOnlyObservableCollection<Link> source, List<MultiLinkModel> destination,
+            ResolutionContext context)
         {
-            if (source is TDst)
+            var linksConvert = new List<MultiLinkModel>();
+            foreach (var link in source)
             {
-                return (TDst)(object)context.Mapper.Map<MultiLinkModel>(source);
+                if (!(link is MultiLink))
+                {
+                    continue;
+                }
+
+                if (!_tracker.References.TryGetValue(link, out var model))
+                {
+                    model = context.Mapper.Map<MultiLinkModel>(link);
+                    _tracker.References[link] = model;
+                }
+
+                linksConvert.Add((MultiLinkModel) model);
             }
 
-            return (TDst)(object)context.Mapper.Map<SingleLinkModel>(source);
+            return linksConvert;
         }
     }
 }

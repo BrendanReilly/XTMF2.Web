@@ -21,6 +21,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using AutoMapper;
 using XTMF2.Editing;
+using XTMF2.ModelSystemConstruct;
 using XTMF2.Web.Data.Models.Editing;
 using XTMF2.Web.Server.Utils;
 using XTMF2.Web.Shared;
@@ -78,7 +79,7 @@ namespace XTMF2.Web.Server.Session
             new Dictionary<object, ViewObject>();
 
         /// <summary>
-        ///     Delegate tracker for objects subscribiding to model system changes
+        ///     Delegate tracker for objects subscribing to model system changes
         /// </summary>
         /// <value></value>
         public ModelSystemEditingModel ModelSystem { get; }
@@ -184,6 +185,35 @@ namespace XTMF2.Web.Server.Session
                         OnModelSystemCollectionChanged;
                     ((INotifyCollectionChanged)boundary.Starts).CollectionChanged += OnModelSystemCollectionChanged;
                 }
+
+                /*if (viewObject is SingleLinkModel singleLink)
+                {
+                    singleLink.Destination = ModelSystemObjectReferenceMap[((SingleLink)singleLink.ObjectReference).Destination] as NodeModel;
+                    singleLink.Origin = ModelSystemObjectReferenceMap[((SingleLink)singleLink.ObjectReference).Origin] as NodeModel;
+                    if (singleLink.Destination != null)
+                    {
+                        singleLink.DestinationId = singleLink.Destination.Id;
+                    }
+                    if (singleLink.Origin != null)
+                    {
+                        singleLink.OriginId = singleLink.Origin.Id;
+                    }
+                }
+
+                if (viewObject is MultiLinkModel multiLink)
+                {
+                    List<NodeModel> destinationRefs = new List<NodeModel>();
+                    List<Guid> destinationIds = new List<Guid>();
+                    foreach (var destination in multiLink.Destinations)
+                    {
+                        var destinationRef = (NodeModel)ModelSystemObjectReferenceMap[destination.ObjectReference];
+                        destinationRefs.Add(destinationRef);
+                        destinationIds.Add(destinationRef.Id);
+                    }
+
+                    multiLink.Destinations = destinationRefs;
+                    multiLink.DestinationIds = destinationIds;
+                } */
             }
         }
 
