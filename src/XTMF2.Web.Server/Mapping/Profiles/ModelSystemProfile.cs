@@ -15,16 +15,11 @@
 //     You should have received a copy of the GNU General Public License
 //     along with XTMF2.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using AutoMapper;
 using XTMF2.ModelSystemConstruct;
 using XTMF2.Web.Data.Models;
 using XTMF2.Web.Data.Models.Editing;
 using XTMF2.Web.Server.Mapping.Actions;
-using XTMF2.Web.Server.Mapping.Converters;
-using XTMF2.Web.Server.Services;
 
 namespace XTMF2.Web.Server.Mapping.Profiles
 {
@@ -46,40 +41,40 @@ namespace XTMF2.Web.Server.Mapping.Profiles
         {
             CreateMap<ModelSystem, ModelSystemEditingModel>();
             CreateMap<Boundary, BoundaryModel>()
-                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<Boundary, BoundaryModel>>();
+                .BeforeMap<GenerateModelSystemObjectIdAction<Boundary, BoundaryModel>>();
 
             CreateMap<Link, LinkModel>()
-                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<Link, LinkModel>>();
+                .BeforeMap<GenerateModelSystemObjectIdAction<Link, LinkModel>>();
             CreateMap<Link, MultiLinkModel>()
-                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<Link, MultiLinkModel>>();
+                .BeforeMap<GenerateModelSystemObjectIdAction<Link, MultiLinkModel>>();
             CreateMap<MultiLink, LinkModel>()
-                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<MultiLink, LinkModel>>();
+                .BeforeMap<GenerateModelSystemObjectIdAction<MultiLink, LinkModel>>()
+                .AfterMap((src, dest) => { dest.LinkType = LinkType.Multi; });
             CreateMap<SingleLink, LinkModel>()
-                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<SingleLink, LinkModel>>()
+                .BeforeMap<GenerateModelSystemObjectIdAction<SingleLink, LinkModel>>()
                 .AfterMap((src, dest) =>
                 {
+                    dest.LinkType = LinkType.Single;
                     dest.OriginHookId = dest.OriginHook.Id;
                     dest.OriginId = dest.Origin.Id;
                 });
             CreateMap<Start, StartModel>()
                 .ForMember(m => m.TypeString, opt => opt.MapFrom(x => x.Type.ToString()))
-                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<Start, StartModel>>();
+                .BeforeMap<GenerateModelSystemObjectIdAction<Start, StartModel>>();
 
             CreateMap<Node, NodeModel>()
                 .ForMember(m => m.ContainedWithin, opt => { opt.MapFrom(x => x.ContainedWithin); })
-                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<Node, NodeModel>>()
+                .BeforeMap<GenerateModelSystemObjectIdAction<Node, NodeModel>>()
                 .ForMember(m => m.TypeString, opt => opt.MapFrom(x => x.Type.ToString()))
                 .AfterMap((src, dest) => { dest.ContainedWithinId = dest.ContainedWithin.Id; });
 
             CreateMap<NodeHook, NodeHookModel>()
                 .ForMember(m => m.TypeString, opt => opt.MapFrom(x => x.Type.ToString()))
-                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<NodeHook, NodeHookModel>>();
+                .BeforeMap<GenerateModelSystemObjectIdAction<NodeHook, NodeHookModel>>();
             CreateMap<CommentBlock, CommentBlockModel>()
-                .BeforeMap<Actions.GenerateModelSystemObjectIdAction<CommentBlock, CommentBlockModel>>();
+                .BeforeMap<GenerateModelSystemObjectIdAction<CommentBlock, CommentBlockModel>>();
             CreateMap<Rectangle, Data.Types.Rectangle>();
-            CreateMap<Data.Types.Rectangle,Rectangle > ();
-
+            CreateMap<Data.Types.Rectangle, Rectangle>();
         }
-
     }
 }
